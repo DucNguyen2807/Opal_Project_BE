@@ -20,10 +20,10 @@ namespace Opal_Exe201.Service.Services.UserServices
 
         public async Task<UserLoginResponseModel> Login(UserLoginRequestModel request)
         {
-            var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.Email.Equals(request.Email))).FirstOrDefault();
+            var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.Username.Equals(request.Username))).FirstOrDefault();
             if (user == null)
             {
-                throw new CustomException("There is no account using this email!");
+                throw new CustomException("There is no account using this Username!");
             }
             if (!PasswordHasher.VerifyPassword(request.Password, user.Password))
             {

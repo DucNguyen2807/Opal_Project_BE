@@ -10,9 +10,8 @@ namespace Opal_Exe201.Data.DTOs.UserDTOs
     public class UserLoginRequestModel
     {
 
-        [Required(ErrorMessage = "Please input your email")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
-        public string Email { get; set; } = null!;
+        [Required(ErrorMessage = "Please input your username")]
+        public string Username { get; set; } = null!;
 
         [Required(ErrorMessage = "Please input your password")]
         public string Password { get; set; } = null!;
