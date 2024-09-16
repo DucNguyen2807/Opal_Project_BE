@@ -37,6 +37,13 @@ namespace Opal_Exe201.Service.Utils
             return jwtTokenHandler.WriteToken(token);
         }
 
+        public static string DecodeToken(string jwtToken, string nameClaim)
+        {
+            var _tokenHandler = new JwtSecurityTokenHandler();
+            Claim? claim = _tokenHandler.ReadJwtToken(jwtToken).Claims.FirstOrDefault(selector => selector.Type.ToString().Equals(nameClaim));
+            return claim != null ? claim.Value : "Error!!!";
+        }
+
 
     }
 }

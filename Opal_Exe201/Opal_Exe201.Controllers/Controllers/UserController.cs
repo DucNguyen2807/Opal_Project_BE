@@ -18,22 +18,17 @@ namespace Opal_Exe201.Controllers.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequestModel request)
+        public async Task<IActionResult> Login(UserLoginRequestModel request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var response = await _userService.Login(request);
-                return Ok(response);
-            }
-            catch (CustomException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var user = await _userService.Login(request);
+            return Ok(user);
+        }
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register(UserRegisterRequestModel request)
+        {
+            await _userService.Register(request);
+            return Ok("Register successfully!");
         }
 
 

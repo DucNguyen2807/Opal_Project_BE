@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Opal_Exe201.Controllers.Extensions;
+using Opal_Exe201.Data.Mapper;
 using Opal_Exe201.Service.Services.UserServices;
 using System.Text;
 
@@ -18,6 +19,8 @@ builder.Services.AddUnitOfWork();
 
 //========================================== DependencyInjection =======================================
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
+
 
 
 //========================================== AUTHENTICATION =======================================
@@ -36,6 +39,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
         };
     });
+
+//=========================================== CORS ================================================
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAll",
+                      policy =>
+                      {
+                          policy
+                          //.WithOrigins("http://localhost:3000")
+                          .AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                          //.AllowCredentials();
+                      });
+});
 
 //================================================ SWAGGER ========================================
 
@@ -79,6 +98,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
+
 
 app.UseAuthorization();
 
