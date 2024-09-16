@@ -2,12 +2,14 @@
 using Opal_Exe201.Data.Repositories.CustomizationRepositories;
 using Opal_Exe201.Data.Repositories.EventRepositories;
 using Opal_Exe201.Data.Repositories.NotificationRepositories;
+using Opal_Exe201.Data.Repositories.OTPCodeRepositories;
 using Opal_Exe201.Data.Repositories.PaymentRepositories;
 using Opal_Exe201.Data.Repositories.RefreshTokenRepositories;
 using Opal_Exe201.Data.Repositories.SeedRepositories;
 using Opal_Exe201.Data.Repositories.SubscriptionRepositories;
 using Opal_Exe201.Data.Repositories.TasksRepositories;
 using Opal_Exe201.Data.Repositories.UserRepositories;
+using Opal_Exe201.Data.Repositories.UserSubRepositories;
 using System.ComponentModel.DataAnnotations;
 
 namespace Opal_Exe201.Data.UnitOfWorks
@@ -24,6 +26,9 @@ namespace Opal_Exe201.Data.UnitOfWorks
         private ISubscriptionRepository _subscriptionRepository;
         private ITaskRepository _taskRepository;
         private IUserRepository _userRepository;
+        private IUserSubRepository _userSubRepository;
+        private IOTPCodeRepository _otpCodeRepository;
+
 
 
         public UnitOfWork(OpalExeContext context)
@@ -94,7 +99,20 @@ namespace Opal_Exe201.Data.UnitOfWorks
                 return _userRepository ??= new UserRepository(_context);
             }
         }
-
+        public IUserSubRepository UserSubRepository
+        {
+            get
+            {
+                return _userSubRepository ??= new UserSubRepository(_context);
+            }
+        }
+        public IOTPCodeRepository OTPCodeRepository
+        {
+            get
+            {
+                return _otpCodeRepository ??= new OTPCodeRepository(_context);
+            }
+        }
 
         public void Save()
         {

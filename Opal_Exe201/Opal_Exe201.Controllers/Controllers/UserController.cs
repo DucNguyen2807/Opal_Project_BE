@@ -30,7 +30,13 @@ namespace Opal_Exe201.Controllers.Controllers
             await _userService.Register(request);
             return Ok("Register successfully!");
         }
-
+        [HttpPost]
+        [Route("password/reset")]
+        public async Task<IActionResult> ResetPassword(UserResetPasswordRequestModel request)
+        {
+            await _userService.ResetPassword(request);
+            return Ok();
+        }
 
     }
 }

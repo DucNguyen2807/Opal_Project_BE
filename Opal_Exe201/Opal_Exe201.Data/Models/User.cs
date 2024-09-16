@@ -29,13 +29,15 @@ public partial class User
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
+    public virtual ICollection<Otpcode> Otpcodes { get; set; } = new List<Otpcode>();
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public virtual ICollection<Seed> Seeds { get; set; } = new List<Seed>();
 
-    public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
-
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
+    public virtual ICollection<UserSub> UserSubs { get; set; } = new List<UserSub>();
 }

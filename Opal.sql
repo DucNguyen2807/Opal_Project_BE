@@ -17,7 +17,17 @@ CREATE TABLE Users (
     updated_at DATETIME
 );
 GO
+-- Bảng OTPCode để lưu mã OTP
+CREATE TABLE OTPCode (
+    Id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
+    OTP CHAR(6) NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    IsUsed BIT NOT NULL,
+    CreatedBy NVARCHAR(36) NOT NULL,
+    FOREIGN KEY (CreatedBy) REFERENCES Users(user_id)
+);
 
+GO
 -- Quản lý các công việc người dùng
 CREATE TABLE Tasks (
     task_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
@@ -60,21 +70,33 @@ CREATE TABLE Seeds (
 );
 GO
 
+GO
 -- Quản lý gói đăng ký
 CREATE TABLE Subscriptions (
     subscription_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
-    user_id NVARCHAR(36),
-    [plan] NVARCHAR(50) NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    payment_amount DECIMAL(10, 2),
-    payment_method NVARCHAR(50) NOT NULL,
+    SubName NVARCHAR(150) NOT NULL,
+    Duration DATE NOT NULL,
+    Price DECIMAL(10, 2),
+    SubDescription NVARCHAR(MAX) NOT NULL,
     status NVARCHAR(50), -- No default value
-    created_at DATETIME,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+
 );
 GO
 
+-- Quản lý gói đăng ký
+CREATE TABLE UserSub (
+    UserSubID NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
+    user_id NVARCHAR(36),
+    subscription_id NVARCHAR(36),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status NVARCHAR(50), -- No default value
+    created_at DATETIME,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (subscription_id) REFERENCES Subscriptions(subscription_id)
+
+);
+GO
 -- Nhắc nhở công việc và sự kiện
 CREATE TABLE Notifications (
     notification_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
@@ -129,10 +151,4 @@ CREATE TABLE RefreshTokens (
 GO
 
 
-  -- Insert sample data into Users table
-INSERT INTO Users (user_id, username, password, email, phone_number, subscription_plan, role, created_at, updated_at)
-VALUES 
-  (NEWID(), 'admin1', 'hashedpassword1', 'admin1@example.com', '0123456789', 'Premium', 'Admin', GETDATE(), GETDATE()),
-  (NEWID(), 'user1', 'hashedpassword2', 'user1@example.com', '0987654321', 'Basic', 'User', GETDATE(), GETDATE()),
-  (NEWID(), 'admin2', 'hashedpassword3', 'admin2@example.com', '0123456780', 'Premium', 'Admin', GETDATE(), GETDATE()),
-  (NEWID(), 'user2', 'hashedpassword4', 'user2@example.com', '0987654320', 'Free', 'User', GETDATE(), GETDATE());
+  

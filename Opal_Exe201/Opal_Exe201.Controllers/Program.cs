@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Opal_Exe201.Controllers.Extensions;
 using Opal_Exe201.Data.Mapper;
+using Opal_Exe201.Service.Services.EmailServices;
+using Opal_Exe201.Service.Services.OTPService;
 using Opal_Exe201.Service.Services.UserServices;
 using System.Text;
 
@@ -19,6 +21,8 @@ builder.Services.AddUnitOfWork();
 
 //========================================== DependencyInjection =======================================
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IOTPService, OTPService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 
