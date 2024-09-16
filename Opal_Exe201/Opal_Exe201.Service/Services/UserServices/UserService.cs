@@ -30,7 +30,7 @@ namespace Opal_Exe201.Service.Services.UserServices
                 throw new CustomException("Password incorrect!");
             }
             return new UserLoginResponseModel()
-            {
+            { 
                 UserInfo = new UserInfo
                 {
                     Password = user.Password,
@@ -58,7 +58,7 @@ namespace Opal_Exe201.Service.Services.UserServices
             newUser.Role = nameof(RoleEnums.User);
             newUser.Email = "";
             newUser.PhoneNumber = "";
-            newUser.SubscriptionPlan = "";
+            newUser.SubscriptionPlan = nameof(SubscriptionEnum.Free);
             newUser.CreatedAt = DateTime.Now;
             newUser.UpdatedAt = DateTime.Now;
             var firstPassword = request.Password;
