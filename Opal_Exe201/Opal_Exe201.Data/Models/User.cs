@@ -11,7 +11,11 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
+    public string? Fullname { get; set; }
+
     public string? Email { get; set; }
+
+    public string? Gender { get; set; }
 
     public string? PhoneNumber { get; set; }
 

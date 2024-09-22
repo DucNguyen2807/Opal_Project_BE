@@ -57,7 +57,9 @@ namespace Opal_Exe201.Service.Services.UserServices
             User newUser = _mapper.Map<User>(request);
             newUser.UserId = Guid.NewGuid().ToString();
             newUser.Role = nameof(RoleEnums.User);
-            newUser.Email = "";
+            newUser.Email = request.Username;
+            newUser.Fullname = "";
+            newUser.Gender = "";
             newUser.PhoneNumber = "";
             newUser.SubscriptionPlan = nameof(SubscriptionEnum.Free);
             newUser.CreatedAt = DateTime.Now;
@@ -115,6 +117,34 @@ namespace Opal_Exe201.Service.Services.UserServices
             _unitOfWork.UsersRepository.Update(user);
             _unitOfWork.Save();
 
+        }
+
+        public async System.Threading.Tasks.Task UpdateUser(UpdateByUserModel request, string id)
+        {
+            var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.UserId.Equals(id))).FirstOrDefault();
+            if (user == null)
+            {
+                throw new CustomException("User not found");
+            }
+            if (!string.IsNullOrEmpty(request.Fullname))
+            {
+                user.Fullname = request.Fullname;
+            }
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                user.PhoneNumber = request.PhoneNumber;
+            }
+            if (!string.IsNullOrEmpty(request.Email))
+            {
+                user.Email = request.Email;
+            }
+            if (!string.IsNullOrEmpty(request.Gender))
+            {
+                user.Gender = request.Gender;
+            }
+
+            await _unitOfWork.UsersRepository.UpdateAsync(id, user);
+            _unitOfWork.Save();
         }
 
     }

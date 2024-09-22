@@ -7,6 +7,8 @@ namespace Opal_Exe201.Service.Services.UserServices
         Task<UserLoginResponseModel> Login(UserLoginRequestModel request);
         Task Register(UserRegisterRequestModel request);
         Task ResetPassword(UserResetPasswordRequestModel request);
+        Task UpdateUser(UpdateByUserModel request, string id);
+
         Task ChangePassword(UserChangePasswordRequestModel model, string token);
     }
 }

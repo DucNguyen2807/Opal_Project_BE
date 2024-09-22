@@ -37,7 +37,7 @@ public partial class OpalExeContext : DbContext
     {
         modelBuilder.Entity<Customization>(entity =>
         {
-            entity.HasKey(e => e.CustomizationId).HasName("PK__Customiz__D1DF8D8944DB7AED");
+            entity.HasKey(e => e.CustomizationId).HasName("PK__Customiz__D1DF8D896D538F9D");
 
             entity.Property(e => e.CustomizationId)
                 .HasMaxLength(36)
@@ -58,12 +58,12 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Customizations)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Customiza__user___45F365D3");
+                .HasConstraintName("FK__Customiza__user___5812160E");
         });
 
         modelBuilder.Entity<Event>(entity =>
         {
-            entity.HasKey(e => e.EventId).HasName("PK__Events__2370F72768A466AB");
+            entity.HasKey(e => e.EventId).HasName("PK__Events__2370F727AE77E1DC");
 
             entity.Property(e => e.EventId)
                 .HasMaxLength(36)
@@ -92,12 +92,12 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Events)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Events__user_id__30F848ED");
+                .HasConstraintName("FK__Events__user_id__4316F928");
         });
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__E059842F747A5E51");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__E059842F46B4EDC4");
 
             entity.Property(e => e.NotificationId)
                 .HasMaxLength(36)
@@ -122,20 +122,20 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__Notificat__event__4222D4EF");
+                .HasConstraintName("FK__Notificat__event__5441852A");
 
             entity.HasOne(d => d.Task).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.TaskId)
-                .HasConstraintName("FK__Notificat__task___412EB0B6");
+                .HasConstraintName("FK__Notificat__task___534D60F1");
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Notificat__user___403A8C7D");
+                .HasConstraintName("FK__Notificat__user___52593CB8");
         });
 
         modelBuilder.Entity<Otpcode>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OTPCode__3214EC077AC95FD3");
+            entity.HasKey(e => e.Id).HasName("PK__OTPCode__3214EC072991C06E");
 
             entity.ToTable("OTPCode");
 
@@ -153,14 +153,14 @@ public partial class OpalExeContext : DbContext
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Otpcodes)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OTPCode__Created__29572725");
+                .HasConstraintName("FK__OTPCode__Created__3B75D760");
         });
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__ED1FC9EAAACF2C5B");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__ED1FC9EAE619169C");
 
-            entity.HasIndex(e => e.TransactionId, "UQ__Payments__85C600AEA5A5CFA7").IsUnique();
+            entity.HasIndex(e => e.TransactionId, "UQ__Payments__85C600AE06C3CA32").IsUnique();
 
             entity.Property(e => e.PaymentId)
                 .HasMaxLength(36)
@@ -190,16 +190,16 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.Subscription).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.SubscriptionId)
-                .HasConstraintName("FK__Payments__subscr__4BAC3F29");
+                .HasConstraintName("FK__Payments__subscr__5DCAEF64");
 
             entity.HasOne(d => d.User).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Payments__user_i__4AB81AF0");
+                .HasConstraintName("FK__Payments__user_i__5CD6CB2B");
         });
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.TokenId).HasName("PK__RefreshT__CB3C9E1768EF2031");
+            entity.HasKey(e => e.TokenId).HasName("PK__RefreshT__CB3C9E177996F30D");
 
             entity.Property(e => e.TokenId)
                 .HasMaxLength(36)
@@ -221,12 +221,12 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.RefreshTokens)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__RefreshTo__user___4F7CD00D");
+                .HasConstraintName("FK__RefreshTo__user___619B8048");
         });
 
         modelBuilder.Entity<Seed>(entity =>
         {
-            entity.HasKey(e => e.SeedId).HasName("PK__Seeds__834250E1307ED1E5");
+            entity.HasKey(e => e.SeedId).HasName("PK__Seeds__834250E1EAC5F722");
 
             entity.Property(e => e.SeedId)
                 .HasMaxLength(36)
@@ -245,12 +245,12 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Seeds)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Seeds__user_id__34C8D9D1");
+                .HasConstraintName("FK__Seeds__user_id__46E78A0C");
         });
 
         modelBuilder.Entity<Subscription>(entity =>
         {
-            entity.HasKey(e => e.SubscriptionId).HasName("PK__Subscrip__863A7EC1319AF389");
+            entity.HasKey(e => e.SubscriptionId).HasName("PK__Subscrip__863A7EC1DD1DB402");
 
             entity.Property(e => e.SubscriptionId)
                 .HasMaxLength(36)
@@ -265,7 +265,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Task>(entity =>
         {
-            entity.HasKey(e => e.TaskId).HasName("PK__Tasks__0492148DDB579C7E");
+            entity.HasKey(e => e.TaskId).HasName("PK__Tasks__0492148DD9AB8722");
 
             entity.Property(e => e.TaskId)
                 .HasMaxLength(36)
@@ -297,14 +297,14 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Tasks__user_id__2D27B809");
+                .HasConstraintName("FK__Tasks__user_id__3F466844");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FB0F9D872");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FF8D2CD29");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC57279BFC328").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC5721FF134A9").IsUnique();
 
             entity.Property(e => e.UserId)
                 .HasMaxLength(36)
@@ -317,6 +317,12 @@ public partial class OpalExeContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("email");
+            entity.Property(e => e.Fullname)
+                .HasMaxLength(255)
+                .HasColumnName("fullname");
+            entity.Property(e => e.Gender)
+                .HasMaxLength(100)
+                .HasColumnName("gender");
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -342,7 +348,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<UserSub>(entity =>
         {
-            entity.HasKey(e => e.UserSubId).HasName("PK__UserSub__7B2D2CA600B7C171");
+            entity.HasKey(e => e.UserSubId).HasName("PK__UserSub__7B2D2CA66721F33D");
 
             entity.ToTable("UserSub");
 
@@ -367,11 +373,11 @@ public partial class OpalExeContext : DbContext
 
             entity.HasOne(d => d.Subscription).WithMany(p => p.UserSubs)
                 .HasForeignKey(d => d.SubscriptionId)
-                .HasConstraintName("FK__UserSub__subscri__3C69FB99");
+                .HasConstraintName("FK__UserSub__subscri__4E88ABD4");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserSubs)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__UserSub__user_id__3B75D760");
+                .HasConstraintName("FK__UserSub__user_id__4D94879B");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -9,7 +9,9 @@ CREATE TABLE Users (
     user_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+	fullname NVARCHAR(255),
     email VARCHAR(100),
+	gender NVARCHAR(100),
     phone_number VARCHAR(20),
     subscription_plan NVARCHAR(50), -- No default value
     role NVARCHAR(50), -- New role column

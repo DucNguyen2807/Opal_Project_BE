@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Opal_Exe201.Data.DTOs.UserDTOs;
 using Opal_Exe201.Service.Services.UserServices;
 using Opal_Exe201.Service.Utils;
@@ -36,6 +37,14 @@ namespace Opal_Exe201.Controllers.Controllers
         {
             await _userService.ResetPassword(request);
             return Ok();
+        }
+        [HttpPut]
+        [Route("user/update")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateByUserModel request, string id)
+        {
+
+            await _userService.UpdateUser(request, id);
+            return Ok("User updated successfully!");
         }
 
     }
