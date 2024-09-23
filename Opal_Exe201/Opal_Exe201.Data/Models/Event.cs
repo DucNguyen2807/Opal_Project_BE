@@ -13,7 +13,9 @@ public partial class Event
 
     public string? EventDescription { get; set; }
 
-    public DateTime EventTime { get; set; }
+    public DateTime StartTime { get; set; }
+
+    public DateTime EndTime { get; set; }
 
     public DateTime? NotificationTime { get; set; }
 

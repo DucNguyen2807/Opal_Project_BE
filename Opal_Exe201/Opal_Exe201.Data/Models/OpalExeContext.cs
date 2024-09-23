@@ -37,7 +37,7 @@ public partial class OpalExeContext : DbContext
     {
         modelBuilder.Entity<Customization>(entity =>
         {
-            entity.HasKey(e => e.CustomizationId).HasName("PK__Customiz__D1DF8D896D538F9D");
+            entity.HasKey(e => e.CustomizationId).HasName("PK__Customiz__D1DF8D89802BF988");
 
             entity.Property(e => e.CustomizationId)
                 .HasMaxLength(36)
@@ -63,7 +63,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Event>(entity =>
         {
-            entity.HasKey(e => e.EventId).HasName("PK__Events__2370F727AE77E1DC");
+            entity.HasKey(e => e.EventId).HasName("PK__Events__2370F7279FAC3569");
 
             entity.Property(e => e.EventId)
                 .HasMaxLength(36)
@@ -72,10 +72,10 @@ public partial class OpalExeContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
-            entity.Property(e => e.EventDescription).HasColumnName("event_description");
-            entity.Property(e => e.EventTime)
+            entity.Property(e => e.EndTime)
                 .HasColumnType("datetime")
-                .HasColumnName("event_time");
+                .HasColumnName("end_time");
+            entity.Property(e => e.EventDescription).HasColumnName("event_description");
             entity.Property(e => e.EventTitle)
                 .HasMaxLength(255)
                 .HasColumnName("event_title");
@@ -83,6 +83,9 @@ public partial class OpalExeContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("notification_time");
             entity.Property(e => e.Recurring).HasColumnName("recurring");
+            entity.Property(e => e.StartTime)
+                .HasColumnType("datetime")
+                .HasColumnName("start_time");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
@@ -97,7 +100,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__E059842F46B4EDC4");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__E059842F59277622");
 
             entity.Property(e => e.NotificationId)
                 .HasMaxLength(36)
@@ -135,7 +138,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Otpcode>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OTPCode__3214EC072991C06E");
+            entity.HasKey(e => e.Id).HasName("PK__OTPCode__3214EC07C4206EBC");
 
             entity.ToTable("OTPCode");
 
@@ -158,9 +161,9 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__ED1FC9EAE619169C");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__ED1FC9EA19F8C122");
 
-            entity.HasIndex(e => e.TransactionId, "UQ__Payments__85C600AE06C3CA32").IsUnique();
+            entity.HasIndex(e => e.TransactionId, "UQ__Payments__85C600AE2250EEAE").IsUnique();
 
             entity.Property(e => e.PaymentId)
                 .HasMaxLength(36)
@@ -199,7 +202,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.TokenId).HasName("PK__RefreshT__CB3C9E177996F30D");
+            entity.HasKey(e => e.TokenId).HasName("PK__RefreshT__CB3C9E17280608CD");
 
             entity.Property(e => e.TokenId)
                 .HasMaxLength(36)
@@ -226,7 +229,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Seed>(entity =>
         {
-            entity.HasKey(e => e.SeedId).HasName("PK__Seeds__834250E1EAC5F722");
+            entity.HasKey(e => e.SeedId).HasName("PK__Seeds__834250E1759CCCDB");
 
             entity.Property(e => e.SeedId)
                 .HasMaxLength(36)
@@ -250,7 +253,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Subscription>(entity =>
         {
-            entity.HasKey(e => e.SubscriptionId).HasName("PK__Subscrip__863A7EC1DD1DB402");
+            entity.HasKey(e => e.SubscriptionId).HasName("PK__Subscrip__863A7EC12F2FC3E1");
 
             entity.Property(e => e.SubscriptionId)
                 .HasMaxLength(36)
@@ -265,7 +268,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<Task>(entity =>
         {
-            entity.HasKey(e => e.TaskId).HasName("PK__Tasks__0492148DD9AB8722");
+            entity.HasKey(e => e.TaskId).HasName("PK__Tasks__0492148D43E5D91A");
 
             entity.Property(e => e.TaskId)
                 .HasMaxLength(36)
@@ -302,9 +305,9 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FF8D2CD29");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FC8982BF2");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC5721FF134A9").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC57224A520B1").IsUnique();
 
             entity.Property(e => e.UserId)
                 .HasMaxLength(36)
@@ -348,7 +351,7 @@ public partial class OpalExeContext : DbContext
 
         modelBuilder.Entity<UserSub>(entity =>
         {
-            entity.HasKey(e => e.UserSubId).HasName("PK__UserSub__7B2D2CA66721F33D");
+            entity.HasKey(e => e.UserSubId).HasName("PK__UserSub__7B2D2CA62A9FB1AB");
 
             entity.ToTable("UserSub");
 
