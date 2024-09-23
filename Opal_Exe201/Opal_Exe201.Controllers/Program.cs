@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using Opal_Exe201.Controllers.Extensions;
 using Opal_Exe201.Data.Mapper;
 using Opal_Exe201.Service.Services.EmailServices;
+using Opal_Exe201.Service.Services.EventServices;
 using Opal_Exe201.Service.Services.OTPService;
 using Opal_Exe201.Service.Services.TaskServices;
 using Opal_Exe201.Service.Services.UserServices;
@@ -23,6 +24,7 @@ builder.Services.AddUnitOfWork();
 //========================================== DependencyInjection =======================================
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IOTPService, OTPService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
