@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Opal_Exe201.Data.DTOs.EventDTOS;
 using Opal_Exe201.Data.DTOs.UserDTOs;
 using Opal_Exe201.Data.Models;
 
@@ -11,7 +12,9 @@ namespace Opal_Exe201.Data.Mapper
             //User
             CreateMap<UserRegisterRequestModel, User>();
 
-
+            //Event
+            CreateMap<Event, EventCreateRequest>().ReverseMap();
+            CreateMap<Event, EventResponse>().ReverseMap();
 
         }
     }
