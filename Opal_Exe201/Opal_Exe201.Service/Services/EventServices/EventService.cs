@@ -2,6 +2,7 @@
 using Opal_Exe201.Data.DTOs.EventDTOS;
 using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.UnitOfWorks;
+using Opal_Exe201.Service.Services.EmailServices;
 using Opal_Exe201.Service.Utils;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,14 @@ namespace Opal_Exe201.Service.Services.EventServices
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<EventResponse>> GetAllEventsAsync()
+        public async Task<IEnumerable<EventResponse>> GetAllEventsByDateAsync(DateTime date, string token)
         {
-            var events = await _unitOfWork.EventRepository.GetAsync();
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
+            var startOfDay = date.Date;
+            var endOfDay = startOfDay.AddDays(1).AddTicks(-1);
+
+            var events = await _unitOfWork.EventRepository.GetAsync(e =>
+                e.StartTime >= startOfDay && e.EndTime <= endOfDay && e.UserId == userId);
             return _mapper.Map<IEnumerable<EventResponse>>(events);
         }
 
@@ -45,11 +51,17 @@ namespace Opal_Exe201.Service.Services.EventServices
             eventEntity.CreatedAt = DateTime.UtcNow;
             eventEntity.UpdatedAt = DateTime.UtcNow;
 
+            if (!eventEntity.NotificationTime.HasValue)
+            {
+                eventEntity.NotificationTime = eventEntity.StartTime.AddHours(-2);
+            }
+
             await _unitOfWork.EventRepository.InsertAsync(eventEntity);
             _unitOfWork.Save();
 
             return _mapper.Map<EventResponse>(eventEntity);
         }
+
 
         public async Task<bool> UpdateEventAsync(Guid eventId, EventCreateRequest eventRequest)
         {
