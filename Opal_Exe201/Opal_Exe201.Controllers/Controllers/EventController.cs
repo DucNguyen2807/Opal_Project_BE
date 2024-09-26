@@ -17,9 +17,10 @@ namespace Opal_Exe201.Controllers.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EventResponse>>> GetAllEvents()
+        public async Task<ActionResult<IEnumerable<EventResponse>>> GetAllEventsByDateAsync(DateTime date)
         {
-            var events = await _eventService.GetAllEventsAsync();
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var events = await _eventService.GetAllEventsByDateAsync(date, token);
             return Ok(events);
         }
 
