@@ -17,6 +17,8 @@ public partial class Task
 
     public DateTime? DueDate { get; set; }
 
+    public TimeOnly? TimeTask { get; set; }
+
     public bool? IsCompleted { get; set; }
 
     public string? Status { get; set; }
