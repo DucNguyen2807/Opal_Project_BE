@@ -12,7 +12,7 @@ namespace Opal_Exe201.Service.Services.EventServices
         Task<IEnumerable<EventResponse>> GetAllEventsByDateAsync(DateTime date, string token);
         Task<EventResponse> GetEventByIdAsync(string eventId,string token);
         Task<EventResponse> CreateEventAsync(EventCreateRequest eventRequest, string token);
-        Task<bool> UpdateEventAsync(Guid eventId, EventCreateRequest eventRequest);
+        Task<bool> UpdateEventAsync(string eventId, EventCreateRequest eventRequest, string token);
         Task<bool> DeleteEventAsync(Guid eventId);
     }
 }

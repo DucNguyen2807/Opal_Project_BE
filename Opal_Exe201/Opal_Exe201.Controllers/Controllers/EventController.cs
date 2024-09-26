@@ -46,9 +46,16 @@ namespace Opal_Exe201.Controllers.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(Guid id, EventCreateRequest eventRequest)
+        public async Task<IActionResult> UpdateEvent(string id, [FromBody] EventCreateRequest eventRequest)
         {
-            var result = await _eventService.UpdateEventAsync(id, eventRequest);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _eventService.UpdateEventAsync(id, eventRequest, token);
+
             if (!result)
             {
                 return NotFound();

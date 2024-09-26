@@ -7,7 +7,9 @@ using Opal_Exe201.Service.Services.EmailServices;
 using Opal_Exe201.Service.Services.EventServices;
 using Opal_Exe201.Service.Services.OTPService;
 using Opal_Exe201.Service.Services.UserServices;
+using Hangfire;
 using System.Text;
+using Opal_Exe201.Service.Services.NotificationServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IOTPService, OTPService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 
@@ -94,6 +97,21 @@ builder.Services.AddSwaggerGen(options =>
 //===================================================================================================
 
 
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
+    config.UseSimpleAssemblyNameTypeSerializer();
+    config.UseRecommendedSerializerSettings();
+});
+builder.Services.AddHangfireServer(options =>
+{
+    options.WorkerCount = 1;
+});
+
+//===================================================================================================
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -106,6 +124,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
+app.UseHangfireDashboard();
+RecurringJob.AddOrUpdate<INotificationService>(service => service.NotifyUsersBeforeEvent(), Cron.Minutely);
 
 app.UseAuthorization();
 
