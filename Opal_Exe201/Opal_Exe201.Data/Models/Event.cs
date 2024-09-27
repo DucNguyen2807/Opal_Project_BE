@@ -25,6 +25,8 @@ public partial class Event
 
     public DateTime? UpdatedAt { get; set; }
 
+    public string? Priority { get; set; }
+
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual User? User { get; set; }

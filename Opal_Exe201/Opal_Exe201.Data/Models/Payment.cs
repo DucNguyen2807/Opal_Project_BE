@@ -20,8 +20,4 @@ public partial class Payment
     public DateTime? PaymentDate { get; set; }
 
     public string? Status { get; set; }
-
-    public virtual Subscription? Subscription { get; set; }
-
-    public virtual User? User { get; set; }
 }

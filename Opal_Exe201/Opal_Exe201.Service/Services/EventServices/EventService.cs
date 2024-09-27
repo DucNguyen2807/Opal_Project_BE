@@ -52,6 +52,7 @@ namespace Opal_Exe201.Service.Services.EventServices
 
             eventEntity.EventTitle = eventRequest.EventTitle;
             eventEntity.EventDescription = eventRequest.EventDescription;
+            eventEntity.Priority = eventRequest.Priority;
             eventEntity.Recurring = true;
 
             eventEntity.StartTime = dateOnly.ToDateTime(TimeOnly.Parse(eventRequest.StartTime.ToString()));
