@@ -61,6 +61,28 @@ namespace Opal_Exe201.Controllers.Controllers
             await _taskService.InsertTaskAsync(request, token);
             return Ok("Create successfully!");
         }
+        [HttpDelete]
+        [Route("delete-task/{taskId}")]
+        public async Task<IActionResult> DeleteTask(string taskId)
+        {
+            try
+            {
+                string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+                bool result = await _taskService.DeleteTaskAsync(taskId, token);
+
+                if (!result)
+                {
+                    return NotFound("Task not found or user does not have permission.");
+                }
+
+                return Ok("Task deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
     }
 }
 
