@@ -7,5 +7,6 @@ namespace Opal_Exe201.Service.Services.TaskServices
         Task<List<TaskByDateReponseModel>> GetTasksByDateAsync(DateTime date, string token);
         Task<bool> ToggleTaskCompletionAsync(string taskId, string token);
         System.Threading.Tasks.Task InsertTaskAsync(TaskCreateRequestModel taskRequest, string token);
+        Task<bool> DeleteTaskAsync(string taskId, string token);
     }
 }

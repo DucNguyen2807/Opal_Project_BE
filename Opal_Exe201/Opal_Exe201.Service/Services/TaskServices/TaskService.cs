@@ -42,7 +42,7 @@ namespace Opal_Exe201.Service.Services.TaskServices
                 taskId = task.TaskId,
                 title = task.Title,
                 description = task.Description,
-                time = task.TimeTask.HasValue ? task.TimeTask.Value.ToString(@"hh\:mm") : null,
+                time = task.TimeTask.HasValue ? task.TimeTask.Value.ToString(@"HH\:mm") : null,
                 date = task.DueDate.HasValue ? task.DueDate.Value.ToString("yyyy-MM-dd") : null,
                 priority = task.Priority.ToString(), 
                 IsCompleted = task.IsCompleted ?? false
@@ -106,6 +106,23 @@ namespace Opal_Exe201.Service.Services.TaskServices
             await _unitOfWork.TaskRepository.InsertAsync(newTask);
 
              _unitOfWork.Save();
+        }
+        public async Task<bool> DeleteTaskAsync(string taskId, string token)
+        {
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
+
+            var task = await _unitOfWork.TaskRepository.GetByIDAsync(taskId);
+
+            if (task == null || task.UserId != userId)
+            {
+                return false;
+            }
+
+            _unitOfWork.TaskRepository.Delete(task);
+
+             _unitOfWork.Save();
+
+            return true; 
         }
 
 
