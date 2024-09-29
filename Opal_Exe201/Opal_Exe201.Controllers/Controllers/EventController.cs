@@ -38,6 +38,7 @@ namespace Opal_Exe201.Controllers.Controllers
         }
 
         [HttpPost]
+        [Route("create-event")]
         public async Task<ActionResult<EventResponse>> CreateEvent(EventCreateRequest eventRequest)
         {
             string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
@@ -65,7 +66,7 @@ namespace Opal_Exe201.Controllers.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(Guid id)
+        public async Task<IActionResult> DeleteEvent(string id)
         {
             var result = await _eventService.DeleteEventAsync(id);
             if (!result)

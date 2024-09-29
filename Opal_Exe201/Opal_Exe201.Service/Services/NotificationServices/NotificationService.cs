@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using Microsoft.AspNetCore.SignalR;
+using Opal_Exe201.Controllers.Hubs;
+using Opal_Exe201.Data.Enums.NotificationType;
+using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.UnitOfWorks;
-using Opal_Exe201.Service.Services.EmailServices;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Opal_Exe201.Service.Services.NotificationServices
@@ -12,29 +12,30 @@ namespace Opal_Exe201.Service.Services.NotificationServices
     public class NotificationService : INotificationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEmailService _emailService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public NotificationService(IUnitOfWork unitOfWork, IEmailService emailService)
+        public NotificationService(IUnitOfWork unitOfWork, IHubContext<NotificationHub> hubContext)
         {
             _unitOfWork = unitOfWork;
-            _emailService = emailService;
+            _hubContext = hubContext;
         }
 
-        public async Task NotifyUsersBeforeEvent()
+        public async System.Threading.Tasks.Task NotifyUsersBeforeEvent()
         {
             var now = DateTime.Now;
-            var twoHoursLater = now.AddMinutes(5);
+            var notificationWindow = now.AddMinutes(5);
 
             Console.WriteLine($"NotifyUsersBeforeEvent is running at {now}");
 
             var notifications = await _unitOfWork.NotificationRepository.GetAsync(
-                n => n.NotificationTime <= twoHoursLater && n.NotificationTime > now && n.IsSent == false,
+                n => n.NotificationTime <= notificationWindow && n.NotificationTime > now && n.IsSent == false,
                 includeProperties: "User,Event"
-);
+            );
 
             if (!notifications.Any())
             {
                 Console.WriteLine("No notifications to send at this time.");
+                return;
             }
 
             foreach (var notification in notifications)
@@ -47,30 +48,35 @@ namespace Opal_Exe201.Service.Services.NotificationServices
 
                 Console.WriteLine($"Now: {now}, NotificationTime: {notification.NotificationTime}");
 
-                await SendNotification(notification.User.Email, notification.Event.EventTitle, notification.Event.StartTime);
+                Console.WriteLine($"Notification found: UserId: {notification.User.UserId}, EventTitle: {notification.Event.EventTitle}");
 
-                notification.IsSent = true;
-                await _unitOfWork.NotificationRepository.UpdateAsync(notification.NotificationId, notification);
+                bool isSent = await SendNotificationToClient(notification.User.UserId, notification.Event.EventTitle, notification.Event.StartTime);
+
+                if (isSent)
+                {
+                    notification.IsSent = true;
+                    await _unitOfWork.NotificationRepository.UpdateAsync(notification.NotificationId, notification);
+                    Console.WriteLine($"Notification marked as sent for user {notification.User.UserId}.");
+                }
             }
-
 
             _unitOfWork.Save();
         }
 
-
-
-        private async Task SendNotification(string Email, string eventTitle, DateTime startTime)
+        private async Task<bool> SendNotificationToClient(string userId, string eventTitle, DateTime startTime)
         {
-            Console.WriteLine($"Sending notification to {Email} for event {eventTitle} starting at {startTime} UTC.");
+            try
+            {
+                Console.WriteLine($"Sending notification to user {userId} for event {eventTitle} at {startTime}.");
 
-            var success = await _emailService.SendEmail(Email, "Sự kiện sắp bắt đầu", $"Sự kiện {eventTitle} sẽ bắt đầu lúc {startTime} UTC.");
-            if (!success)
-            {
-                Console.WriteLine($"Failed to send email to {Email}");
+                string message = $"Event Reminder: {eventTitle} starts at {startTime}.";
+                await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
+                return true;
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Successfully sent email to {Email}");
+                Console.WriteLine($"Failed to send notification: {ex.Message}");
+                return false;
             }
         }
     }

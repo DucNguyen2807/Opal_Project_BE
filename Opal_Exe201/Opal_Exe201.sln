@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opal_Exe201.Controllers", "Opal_Exe201.Controllers\Opal_Exe201.Controllers.csproj", "{C9DC324A-46EA-4BED-9F80-8FF73F1E8C26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opal_Exe201.Controllers", "Opal_Exe201.Controllers\Opal_Exe201.Controllers.csproj", "{C9DC324A-46EA-4BED-9F80-8FF73F1E8C26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opal_Exe201.Data", "Opal_Exe201.Data\Opal_Exe201.Data.csproj", "{FC92BDE6-0F64-434E-84AA-0753487494A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opal_Exe201.Data", "Opal_Exe201.Data\Opal_Exe201.Data.csproj", "{FC92BDE6-0F64-434E-84AA-0753487494A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opal_Exe201.Service", "Opal_Exe201.Service\Opal_Exe201.Service.csproj", "{59186471-F556-4BBF-9EBC-FC4986107F1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opal_Exe201.Service", "Opal_Exe201.Service\Opal_Exe201.Service.csproj", "{59186471-F556-4BBF-9EBC-FC4986107F1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

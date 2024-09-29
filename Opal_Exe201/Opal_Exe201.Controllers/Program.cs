@@ -11,13 +11,13 @@ using Opal_Exe201.Service.Services.UserServices;
 using Hangfire;
 using System.Text;
 using Opal_Exe201.Service.Services.NotificationServices;
+using Microsoft.AspNetCore.SignalR;
+using Opal_Exe201.Controllers.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabase();
@@ -32,14 +32,14 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
-
+//========================================== SignalR =======================================
+builder.Services.AddSignalR();
 
 //========================================== AUTHENTICATION =======================================
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer("Bearer", options =>
+    .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidIssuer = "OpalUser",
             ValidAudience = "OpalUser",
@@ -49,26 +49,37 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
         };
+        // Pass JWT tokens via query string for SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationhub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 //=========================================== CORS ================================================
-
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowAll",
+    options.AddPolicy(name: "AllowSpecificOrigin",
                       policy =>
                       {
-                          policy
-                          //.WithOrigins("http://localhost:3000")
-                          .AllowAnyOrigin()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                          //.AllowCredentials();
+                          policy.WithOrigins("https://10.0.2.2:7203")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowCredentials();
                       });
 });
 
-//================================================ SWAGGER ========================================
-
+//========================================== Swagger & Hangfire ===================================
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -84,20 +95,17 @@ builder.Services.AddSwaggerGen(options =>
     {
         {
             new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
             new string[] {}
         }
     });
 });
-
-//===================================================================================================
-
 
 builder.Services.AddHangfire(config =>
 {
@@ -106,13 +114,11 @@ builder.Services.AddHangfire(config =>
     config.UseSimpleAssemblyNameTypeSerializer();
     config.UseRecommendedSerializerSettings();
 });
+
 builder.Services.AddHangfireServer(options =>
 {
     options.WorkerCount = 1;
 });
-
-//===================================================================================================
-
 
 var app = builder.Build();
 
@@ -126,11 +132,17 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
+app.UseRouting();
+
 app.UseHangfireDashboard();
 RecurringJob.AddOrUpdate<INotificationService>(service => service.NotifyUsersBeforeEvent(), Cron.Minutely);
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/notificationhub");
+    endpoints.MapControllers();
+});
 
 app.Run();

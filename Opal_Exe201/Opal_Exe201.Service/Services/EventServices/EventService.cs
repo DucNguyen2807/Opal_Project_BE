@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Opal_Exe201.Data.DTOs.EventDTOS;
+using Opal_Exe201.Data.Enums.NotificationType;
 using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.UnitOfWorks;
 using Opal_Exe201.Service.Services.EmailServices;
@@ -74,7 +75,9 @@ namespace Opal_Exe201.Service.Services.EventServices
                 UserId = userId,
                 EventId = eventEntity.EventId,
                 NotificationTime = (DateTime)eventEntity.NotificationTime,
+                NotificationType = NotificationType.EventReminder.ToString(),
                 IsSent = false
+                
             };
 
             await _unitOfWork.NotificationRepository.InsertAsync(notification);
@@ -82,8 +85,6 @@ namespace Opal_Exe201.Service.Services.EventServices
 
             return _mapper.Map<EventResponse>(eventEntity);
         }
-
-
 
         public async Task<bool> UpdateEventAsync(string eventId, EventCreateRequest eventRequest, string token)
         {
@@ -136,7 +137,7 @@ namespace Opal_Exe201.Service.Services.EventServices
         }
 
 
-        public async Task<bool> DeleteEventAsync(Guid eventId)
+        public async Task<bool> DeleteEventAsync(string eventId)
         {
             var result = await _unitOfWork.EventRepository.DeleteAsync(eventId);
             _unitOfWork.Save();
