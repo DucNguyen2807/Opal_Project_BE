@@ -137,11 +137,28 @@ namespace Opal_Exe201.Service.Services.EventServices
         }
 
 
-        public async Task<bool> DeleteEventAsync(string eventId)
+        public async Task<bool> DeleteEventAsync(string eventId, string token)
         {
-            var result = await _unitOfWork.EventRepository.DeleteAsync(eventId);
-            _unitOfWork.Save();
-            return result;
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
+            try
+            {
+                var notifications = await _unitOfWork.NotificationRepository.GetAsync(n => n.EventId == eventId);
+
+                foreach (var notification in notifications)
+                {
+                    await _unitOfWork.NotificationRepository.DeleteAsync(notification.NotificationId);
+                }
+                _unitOfWork.Save();
+
+                var result = await _unitOfWork.EventRepository.DeleteAsync(eventId);
+                _unitOfWork.Save();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"An error occurred while deleting the event with ID {eventId}.", ex);
+            }
         }
     }
 }

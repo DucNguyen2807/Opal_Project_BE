@@ -65,10 +65,12 @@ namespace Opal_Exe201.Controllers.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("delete-event/{id}")]
         public async Task<IActionResult> DeleteEvent(string id)
         {
-            var result = await _eventService.DeleteEventAsync(id);
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _eventService.DeleteEventAsync(id, token);
             if (!result)
             {
                 return NotFound();
