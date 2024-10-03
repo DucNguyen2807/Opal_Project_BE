@@ -25,7 +25,7 @@ namespace Opal_Exe201.Data.UnitOfWorks
         IUserSubRepository UserSubRepository { get; }
         IOTPCodeRepository OTPCodeRepository { get; }
 
-
+        Task SaveAsync();
         void Save();
     }
 }

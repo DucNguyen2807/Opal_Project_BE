@@ -10,9 +10,10 @@ using Opal_Exe201.Service.Services.TaskServices;
 using Opal_Exe201.Service.Services.UserServices;
 using Hangfire;
 using System.Text;
-using Opal_Exe201.Service.Services.NotificationServices;
 using Microsoft.AspNetCore.SignalR;
-using Opal_Exe201.Controllers.Hubs;
+using Microsoft.AspNetCore.Authorization;
+using Opal_Exe201.Service.Services.Hangfire;
+using Opal_Exe201.Service.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,19 +24,22 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDatabase();
 builder.Services.AddUnitOfWork();
 
-//========================================== DependencyInjection =======================================
+// Dependency Injection
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IOTPService, OTPService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddTransient<NotificationJob>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
-//========================================== SignalR =======================================
-builder.Services.AddSignalR();
+// SignalR
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
 
-//========================================== AUTHENTICATION =======================================
+// Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -49,7 +53,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
         };
-        // Pass JWT tokens via query string for SignalR
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -66,20 +69,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-//=========================================== CORS ================================================
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowSpecificOrigin",
-                      policy =>
-                      {
-                          policy.WithOrigins("https://10.0.2.2:7203")
-                                .AllowAnyHeader()
-                                .AllowAnyMethod()
-                                .AllowCredentials();
-                      });
+    options.AddPolicy(name: "AllowAll", policy =>
+    {
+        policy
+        .AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
 });
 
-//========================================== Swagger & Hangfire ===================================
+// Swagger & Hangfire
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -114,15 +114,11 @@ builder.Services.AddHangfire(config =>
     config.UseSimpleAssemblyNameTypeSerializer();
     config.UseRecommendedSerializerSettings();
 });
+builder.Services.AddHangfireServer();
 
-builder.Services.AddHangfireServer(options =>
-{
-    options.WorkerCount = 1;
-});
-
+// Build and configure the HTTP request pipeline
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -130,19 +126,22 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigin");
-
+app.UseCors("AllowAll");
 app.UseRouting();
-
-app.UseHangfireDashboard();
-RecurringJob.AddOrUpdate<INotificationService>(service => service.NotifyUsersBeforeEvent(), Cron.Minutely);
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/notificationhub");
+    endpoints.MapHangfireDashboard();
     endpoints.MapControllers();
 });
 
+// Register the recurring job
+RecurringJob.AddOrUpdate<NotificationJob>(
+    job => job.CheckAndSendNotifications(),
+    Cron.Minutely);
+
+// Run the application
 app.Run();
