@@ -59,6 +59,7 @@ CREATE TABLE Events (
     recurring BIT, -- No default value
     created_at DATETIME,
     updated_at DATETIME,
+	priority NVARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 GO
@@ -67,8 +68,9 @@ GO
 CREATE TABLE Seeds (
     seed_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
     user_id NVARCHAR(36),
+	percent_growth float,
     seed_count INT, -- No default value
-    parrot_level NVARCHAR(50), -- No default value
+    parrot_level INT, -- No default value
     created_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );

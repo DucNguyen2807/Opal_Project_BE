@@ -17,5 +17,7 @@ public partial class Subscription
 
     public string? Status { get; set; }
 
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
     public virtual ICollection<UserSub> UserSubs { get; set; } = new List<UserSub>();
 }

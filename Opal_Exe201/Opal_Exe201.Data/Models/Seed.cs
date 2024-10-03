@@ -9,9 +9,11 @@ public partial class Seed
 
     public string? UserId { get; set; }
 
+    public double? PercentGrowth { get; set; }
+
     public int? SeedCount { get; set; }
 
-    public string? ParrotLevel { get; set; }
+    public int? ParrotLevel { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

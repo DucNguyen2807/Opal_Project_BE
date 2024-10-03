@@ -25,5 +25,21 @@ namespace Opal_Exe201.Service.Utils
             string hashedEnteredPassword = HashPassword(enteredPassword);
             return hashedEnteredPassword == hashedPassword;
         }
+        public static string GenerateRandomPassword()
+        {
+            int length = 12;
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()";
+            char[] chars = new char[length];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] data = new byte[length];
+                rng.GetBytes(data);
+                for (int i = 0; i < length; i++)
+                {
+                    chars[i] = validChars[data[i] % validChars.Length];
+                }
+            }
+            return new string(chars);
+        }
     }
 }

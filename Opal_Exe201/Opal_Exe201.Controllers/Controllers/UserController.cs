@@ -24,6 +24,15 @@ namespace Opal_Exe201.Controllers.Controllers
             var user = await _userService.Login(request);
             return Ok(user);
         }
+
+        [HttpGet]
+        [Route("load-data")]
+        public async Task<IActionResult> LoadData()
+        {
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var user = await _userService.LoadData(token);
+            return Ok(user);
+        }
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register(UserRegisterRequestModel request)
@@ -40,11 +49,19 @@ namespace Opal_Exe201.Controllers.Controllers
         }
         [HttpPut]
         [Route("user/update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateByUserModel request, string id)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateByUserModel request)
         {
-
-            await _userService.UpdateUser(request, id);
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            await _userService.UpdateUser(request, token);
             return Ok("User updated successfully!");
+        }
+        [HttpPut]
+        [Route("password/change")]
+        public async Task<IActionResult> ChangePassword([FromBody] UserChangePasswordRequestModel model)
+        {
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            await _userService.ChangePassword(model, token);
+            return Ok("Password changed successfully!");
         }
 
     }

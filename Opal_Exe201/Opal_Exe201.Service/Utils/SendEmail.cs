@@ -8,10 +8,10 @@ namespace Opal_Exe201.Service.Utils
 {
     public static class SendEmail
     {
-        public static string CreateAccountEmail( string email, string password)
+        public static string CreateAccountEmail(string fullname, string email, string password)
         {
             var html = $@"<div style='font-family: Arial, sans-serif; color: #333;'>
-                         <p>Dear my friend,</p>
+                          <p>Dear {fullname},</p>
                          <hr>
                          <p>
                             You have requested to create account on {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} +07<br/>
