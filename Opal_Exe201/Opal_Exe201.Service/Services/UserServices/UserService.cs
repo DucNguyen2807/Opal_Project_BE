@@ -5,6 +5,7 @@ using Opal_Exe201.Data.UnitOfWorks;
 using Opal_Exe201.Service.Utils;
 using Opal_Exe201.Data.Enums.UserEnums;
 using Azure.Core;
+using Opal_Exe201.Service.Services.EmailServices;
 
 namespace Opal_Exe201.Service.Services.UserServices
 {
@@ -12,11 +13,12 @@ namespace Opal_Exe201.Service.Services.UserServices
     {
         private IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper )
+        private readonly IEmailService _emailService;
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public async Task<UserLoginResponseModel> Login(UserLoginRequestModel request)
@@ -35,7 +37,12 @@ namespace Opal_Exe201.Service.Services.UserServices
                 UserInfo = new UserInfo
                 {
                     Password = user.Password,
+
                     Email = user.Email,
+                    FullName = user.Fullname,
+                    Gender = user.Gender,
+                    PhoneNumber = user.PhoneNumber,
+                    SubscriptionPlan = user.SubscriptionPlan,
                     Username = user.Username,
                     UserId = user.UserId.ToString(),
 
@@ -44,9 +51,34 @@ namespace Opal_Exe201.Service.Services.UserServices
 
             };
         }
+        public async Task<LoadDataUserModel> LoadData(string token)
+        {
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
+            var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.UserId.Equals(userId))).FirstOrDefault();
+            if (user == null)
+            {
+                throw new CustomException("Fail to load Data");
+            }
+
+            return new LoadDataUserModel()
+            {
+
+                Password = user.Password,
+
+                Email = user.Email,
+                FullName = user.Fullname,
+                Gender = user.Gender,
+                PhoneNumber = user.PhoneNumber,
+                SubscriptionPlan = user.SubscriptionPlan,
+                Username = user.Username,
+                UserId = user.UserId.ToString()
+
+            };
+        }
 
         public async System.Threading.Tasks.Task Register(UserRegisterRequestModel request)
         {
+            // Kiểm tra xem username đã tồn tại chưa
             User currentUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.Username.Equals(request.Username))).FirstOrDefault();
 
             if (currentUser != null)
@@ -58,19 +90,46 @@ namespace Opal_Exe201.Service.Services.UserServices
             newUser.UserId = Guid.NewGuid().ToString();
             newUser.Role = nameof(RoleEnums.User);
             newUser.Email = request.Username;
-            newUser.Fullname = "";
+            newUser.Fullname = request.Fullname;
             newUser.Gender = "";
-            newUser.PhoneNumber = "";
+            newUser.PhoneNumber = request.PhoneNumber;
             newUser.SubscriptionPlan = nameof(SubscriptionEnum.Free);
             newUser.CreatedAt = DateTime.Now;
             newUser.UpdatedAt = DateTime.Now;
-            var firstPassword = request.Password;
 
-            newUser.Password = PasswordHasher.HashPassword(request.Password);
+            var firstPassword = PasswordHasher.GenerateRandomPassword();
+
+            var htmlBody = SendEmail.CreateAccountEmail(request.Fullname, request.Username, firstPassword);
+            bool sendEmailSuccess = await _emailService.SendEmail(request.Username, "Login Information", htmlBody);
+            if (!sendEmailSuccess)
+            {
+                throw new CustomException("Error in sending email");
+            }
+            var hash = PasswordHasher.HashPassword(firstPassword);
+            newUser.Password = hash;
+
 
             await _unitOfWork.UsersRepository.InsertAsync(newUser);
+
+            Seed newSeed = new Seed
+            {
+                SeedId = Guid.NewGuid().ToString(),
+                UserId = newUser.UserId,
+                SeedCount = 0,
+                PercentGrowth = 0,
+                ParrotLevel = 1,
+                CreatedAt = DateTime.Now
+            };
+
+            await _unitOfWork.SeedRepository.InsertAsync(newSeed);
+
             _unitOfWork.Save();
+
+            
+            
+
         }
+
         public async System.Threading.Tasks.Task ResetPassword(UserResetPasswordRequestModel request)
         {
             var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.Email.Equals(request.Email))).FirstOrDefault();
@@ -90,7 +149,7 @@ namespace Opal_Exe201.Service.Services.UserServices
         }
         public async System.Threading.Tasks.Task ChangePassword(UserChangePasswordRequestModel model, string token)
         {
-            var userId = JWTGenerate.DecodeToken(token, "userId");
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
             var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.UserId.Equals(userId))).FirstOrDefault();
 
             if (user == null)
@@ -119,11 +178,12 @@ namespace Opal_Exe201.Service.Services.UserServices
 
         }
 
-        public async System.Threading.Tasks.Task UpdateUser(UpdateByUserModel request, string id)
+        public async System.Threading.Tasks.Task UpdateUser(UpdateByUserModel request, string token)
         {
-            var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.UserId.Equals(id))).FirstOrDefault();
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
+            var user = (await _unitOfWork.UsersRepository.GetAsync(u => u.UserId.Equals(userId))).FirstOrDefault();
             if (user == null)
-            {
+            {            
                 throw new CustomException("User not found");
             }
             if (!string.IsNullOrEmpty(request.Fullname))
@@ -143,7 +203,7 @@ namespace Opal_Exe201.Service.Services.UserServices
                 user.Gender = request.Gender;
             }
 
-            await _unitOfWork.UsersRepository.UpdateAsync(id, user);
+            await _unitOfWork.UsersRepository.UpdateAsync(userId, user);
             _unitOfWork.Save();
         }
 

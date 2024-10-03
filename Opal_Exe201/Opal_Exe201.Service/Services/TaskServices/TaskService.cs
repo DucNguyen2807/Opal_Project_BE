@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Opal_Exe201.Data.DTOs.TaskDTOs;
 using Opal_Exe201.Data.DTOs.UserDTOs;
+using Opal_Exe201.Data.Enums.TaskEnums;
 using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.UnitOfWorks;
 using Opal_Exe201.Service.Utils;
@@ -50,9 +51,46 @@ namespace Opal_Exe201.Service.Services.TaskServices
 
             return taskResponse;
         }
+        public async Task<TaskByDateResponseWithCountModel> GetTasksByDateandPriorityAsync(DateTime date, string token)
+        {
+            var userId = JWTGenerate.DecodeToken(token, "UserId");
+
+            var tasks = await _unitOfWork.TaskRepository.GetAsync(
+                filter: m => m.DueDate.HasValue && m.DueDate.Value.Date == date.Date && m.UserId == userId && m.Priority.Equals("Quan Trọng"),
+                orderBy: q => q.OrderByDescending(t => t.IsCompleted).ThenBy(t => t.TimeTask)
+            );
+
+            if (tasks == null || !tasks.Any())
+            {
+                return new TaskByDateResponseWithCountModel
+                {
+                    totalTask = 0,
+                    tasks = new List<TaskByDateResponseModel>()
+                };
+            }
+
+            var taskResponse = tasks.Select(task => new TaskByDateResponseModel
+            {
+                taskId = task.TaskId,
+                title = task.Title,
+                description = task.Description,
+                time = task.TimeTask.HasValue ? task.TimeTask.Value.ToString(@"HH\:mm") : null,
+                date = task.DueDate.HasValue ? task.DueDate.Value.ToString("yyyy-MM-dd") : null,
+                priority = task.Priority.ToString(),
+                IsCompleted = task.IsCompleted ?? false
+            }).ToList();
+
+            return new TaskByDateResponseWithCountModel
+            {
+                totalTask = tasks.Count(),
+                tasks = taskResponse 
+            };
+        }
+
         public async Task<bool> ToggleTaskCompletionAsync(string taskId, string token)
         {
             var userId = JWTGenerate.DecodeToken(token, "UserId");
+            
 
             var task = await _unitOfWork.TaskRepository.GetByIDAsync(taskId);
 
@@ -60,8 +98,16 @@ namespace Opal_Exe201.Service.Services.TaskServices
             {
                 return false;
             }
+            if (task.Status.Equals("False"))
+            {
+
+                task.Status = "True";
+                
+            }
+
 
             task.IsCompleted = !(task.IsCompleted ?? false);
+            
 
              _unitOfWork.TaskRepository.Update(task);
 
@@ -99,7 +145,7 @@ namespace Opal_Exe201.Service.Services.TaskServices
             newTask.DueDate = taskRequest.DueDate;
             newTask.TimeTask = taskRequest.TimeTask;
             newTask.IsCompleted = false;
-            newTask.Status = "1";
+            newTask.Status = "False";
             newTask.CreatedAt = DateTime.UtcNow;
             newTask.UpdatedAt = DateTime.UtcNow;
 

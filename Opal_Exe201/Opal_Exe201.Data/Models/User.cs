@@ -35,6 +35,8 @@ public partial class User
 
     public virtual ICollection<Otpcode> Otpcodes { get; set; } = new List<Otpcode>();
 
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public virtual ICollection<Seed> Seeds { get; set; } = new List<Seed>();

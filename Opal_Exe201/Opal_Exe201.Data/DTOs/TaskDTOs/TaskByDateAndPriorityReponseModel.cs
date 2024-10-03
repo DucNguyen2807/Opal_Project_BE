@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Opal_Exe201.Data.DTOs.TaskDTOs
 {
-    public class TaskByDateReponseModel
+
+    public class TaskByDateResponseWithCountModel
+    {
+        public int totalTask { get; set; } 
+        public List<TaskByDateResponseModel> tasks { get; set; } // Danh sách các task
+    }
+
+    public class TaskByDateResponseModel
     {
         public string taskId { get; set; }
         public string title { get; set; }
@@ -15,6 +22,6 @@ namespace Opal_Exe201.Data.DTOs.TaskDTOs
         public string time { get; set; }
         public string priority { get; set; }
         public bool IsCompleted { get; set; }
-        public int toalTask { get; set; }
     }
+
 }

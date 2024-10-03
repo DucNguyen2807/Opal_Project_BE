@@ -10,12 +10,16 @@ namespace Opal_Exe201.Data.DTOs.UserDTOs
 {
     public class UserRegisterRequestModel
     {
-        [Required(ErrorMessage = "Please input Username")]
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Username { get; set; } = null!;
 
-        [Required(ErrorMessage = "Please input Password")]
-        [PasswordPropertyText]
-        public string Password { get; set; } = null!;
+        [Required(ErrorMessage = "Fullname is required")]
+        public string Fullname { get; set; } = null!;
+
+        [Required(ErrorMessage = "Phone number is required")]
+        [RegularExpression(@"^0\d{9,11}$", ErrorMessage = "Phone number must start with 0 and be between 10 to 12 digits")]
+        public string PhoneNumber { get; set; } = null!;
 
     }
 }

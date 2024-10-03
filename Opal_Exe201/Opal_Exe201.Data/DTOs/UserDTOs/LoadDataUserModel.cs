@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace Opal_Exe201.Data.DTOs.UserDTOs
 {
-    public class UserLoginResponseModel
-    {
-        public UserInfo UserInfo { get; set; } = null!;
-        public string token { get; set; } = null!;
-    }
-
-    public class UserInfo
+    public class LoadDataUserModel
     {
         public string UserId { get; set; } = null!;
         public string Username { get; set; } = null!;

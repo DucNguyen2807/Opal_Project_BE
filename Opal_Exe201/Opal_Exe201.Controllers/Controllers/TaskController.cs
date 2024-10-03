@@ -33,6 +33,20 @@ namespace Opal_Exe201.Controllers.Controllers
 
             return Ok(tasks);
         }
+        [HttpGet]
+        [Route("get-my-task-by-date")]
+        public async Task<IActionResult> GetTasksAndPriorityByDate([FromQuery] DateTime date)
+        {
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var tasks = await _taskService.GetTasksByDateandPriorityAsync(date, token);
+
+            if (tasks == null)
+            {
+                return NotFound("No tasks found for the selected date.");
+            }
+
+            return Ok(tasks);
+        }
 
         [HttpPut]
         [Route("toggle-task-completion/{taskId}")]
