@@ -25,12 +25,29 @@ namespace Opal_Exe201.Service.Hubs
             _logger.LogInformation($"Sending notification to all users: {message}");
             await Clients.All.SendAsync("ReceiveNotification", message);
         }
-
         public override async Task OnConnectedAsync()
         {
-            _logger.LogInformation($"User connected: {Context.UserIdentifier}");
-            await base.OnConnectedAsync();
+            try
+            {
+                _logger.LogInformation($"Attempting to connect user: {Context.UserIdentifier}");
+
+                if (string.IsNullOrEmpty(Context.UserIdentifier))
+                {
+                    _logger.LogWarning("UserIdentifier is null or empty. Ensure proper authentication.");
+                }
+                else
+                {
+                    _logger.LogInformation($"User successfully connected: {Context.UserIdentifier}");
+                }
+
+                await base.OnConnectedAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during user connection: {ex.Message}");
+            }
         }
+
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {

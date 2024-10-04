@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Opal_Exe201.Service.Services.Hangfire;
 using Opal_Exe201.Service.Hubs;
+using Opal_Exe201.Service.Services.SeedServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IOTPService, OTPService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddTransient<NotificationJob>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
@@ -52,6 +54,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
+            NameClaimType = "UserId"
         };
         options.Events = new JwtBearerEvents
         {

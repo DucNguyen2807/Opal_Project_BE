@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Opal_Exe201.Data.DTOs.TaskDTOs;
 using Opal_Exe201.Data.DTOs.UserDTOs;
 using Opal_Exe201.Data.Enums.TaskEnums;
@@ -17,11 +18,13 @@ namespace Opal_Exe201.Service.Services.TaskServices
     {
         private IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILogger<TaskService> _logger;
 
-        public TaskService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TaskService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<TaskService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<List<TaskByDateReponseModel>> GetTasksByDateAsync(DateTime date, string token)
@@ -89,31 +92,55 @@ namespace Opal_Exe201.Service.Services.TaskServices
 
         public async Task<bool> ToggleTaskCompletionAsync(string taskId, string token)
         {
-            var userId = JWTGenerate.DecodeToken(token, "UserId");
-            
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
 
-            var task = await _unitOfWork.TaskRepository.GetByIDAsync(taskId);
-
-            if (task == null || task.UserId != userId)
+            try
             {
-                return false;
+                var userId = JWTGenerate.DecodeToken(token, "UserId");
+                var task = await _unitOfWork.TaskRepository.GetByIDAsync(taskId);
+
+                if (task == null || task.UserId != userId)
+                {
+                    return false;
+                }
+
+                bool wasCompleted = task.IsCompleted ?? false;
+                task.IsCompleted = !wasCompleted;
+                task.Status = task.IsCompleted.Value ? "True" : "False";
+                _unitOfWork.TaskRepository.Update(task);
+
+                if (!wasCompleted && task.IsCompleted.Value)
+                {
+                    var seed = await _unitOfWork.SeedRepository.GetSeedByUserIdAsync(userId);
+
+                    if (seed != null)
+                    {
+                        seed.SeedCount += 1;
+                        _unitOfWork.SeedRepository.Update(seed);
+                    }
+                    else
+                    {
+                        seed = new Seed
+                        {
+                            SeedId = Guid.NewGuid().ToString(),
+                            UserId = userId,
+                            SeedCount = 1,
+                            CreatedAt = DateTime.Now,
+                        };
+                        await _unitOfWork.SeedRepository.InsertAsync(seed);
+                    }
+                }
+
+                await _unitOfWork.SaveAsync();
+                await transaction.CommitAsync();
+                return true;
             }
-            if (task.Status.Equals("False"))
+            catch (Exception ex)
             {
-
-                task.Status = "True";
-                
+                _logger.LogError(ex, "Error toggling task completion for TaskId: {TaskId}", taskId);
+                await transaction.RollbackAsync();
+                throw;
             }
-
-
-            task.IsCompleted = !(task.IsCompleted ?? false);
-            
-
-             _unitOfWork.TaskRepository.Update(task);
-
-            _unitOfWork.Save();
-
-            return true; 
         }
         public async System.Threading.Tasks.Task InsertTaskAsync(TaskCreateRequestModel taskRequest, string token)
         {

@@ -10,5 +10,6 @@ namespace Opal_Exe201.Data.Repositories.SeedRepositories
 {
     public interface ISeedRepository : IGenericRepository<Seed>
     {
+        Task<Seed> GetSeedByUserIdAsync(string userId);
     }
 }

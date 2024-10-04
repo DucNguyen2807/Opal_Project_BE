@@ -1,4 +1,5 @@
-﻿using Opal_Exe201.Data.Models;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.Repositories.CustomizationRepositories;
 using Opal_Exe201.Data.Repositories.EventRepositories;
 using Opal_Exe201.Data.Repositories.NotificationRepositories;
@@ -142,6 +143,11 @@ namespace Opal_Exe201.Data.UnitOfWorks
                 throw new Exception(exceptionMessage);
             }
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
 
         private bool disposed = false;

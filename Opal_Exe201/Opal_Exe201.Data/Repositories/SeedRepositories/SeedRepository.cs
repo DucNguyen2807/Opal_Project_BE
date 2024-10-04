@@ -1,4 +1,5 @@
-﻿using Opal_Exe201.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.Repositories.GenericRepository;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace Opal_Exe201.Data.Repositories.SeedRepositories
     {
         public SeedRepository(OpalExeContext context) : base(context)
         {
+        }
+        public async Task<Seed> GetSeedByUserIdAsync(string userId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(s => s.UserId == userId);
         }
     }
 }
