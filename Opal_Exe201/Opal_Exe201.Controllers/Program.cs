@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Opal_Exe201.Service.Services.Hangfire;
 using Opal_Exe201.Service.Hubs;
+using Opal_Exe201.Service.Services.PaymentServices;
+using Opal_Exe201.Service.Services.SubscriptionServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IOTPService, OTPService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+
+
 builder.Services.AddTransient<NotificationJob>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 

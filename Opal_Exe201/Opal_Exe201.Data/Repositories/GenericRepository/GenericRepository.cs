@@ -102,5 +102,19 @@ namespace Opal_Exe201.Data.Repositories.GenericRepository
             _dbSet.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).State = EntityState.Modified;
         }
+
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.CountAsync();
+        }
+
+
     }
 }

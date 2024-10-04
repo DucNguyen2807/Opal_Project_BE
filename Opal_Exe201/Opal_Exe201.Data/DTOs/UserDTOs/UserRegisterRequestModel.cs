@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Opal_Exe201.Data.Enums.UserEnums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -22,4 +23,27 @@ namespace Opal_Exe201.Data.DTOs.UserDTOs
         public string PhoneNumber { get; set; } = null!;
 
     }
+
+
+    public class UserRegisterRequestTestingModel
+    {
+        [Required(ErrorMessage = "Please input full name")]
+        public string Fullname { get; set; } = null!;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        public string Email { get; set; } = null!;
+
+        [Required(ErrorMessage = "Please input password")]
+        public string Password { get; set; } = null!;
+
+        [Required(ErrorMessage = "Please input role")]
+        [EnumDataType(typeof(RoleEnums), ErrorMessage = "Invalid role.")]
+        public string Role { get; set; } = null!;
+
+        [Required(ErrorMessage = "Please input phone number")]
+        [Phone]
+        public string PhoneNumber { get; set; } = null!;
+    }
+
 }

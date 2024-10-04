@@ -17,6 +17,22 @@ namespace Opal_Exe201.Controllers.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllUser(int pageIndex, int pageSize, string searchQuery = null)
+        {
+
+            var users = await _userService.GetAllUser(searchQuery, pageIndex, pageSize);
+            return Ok(users);
+        }
+
+        [HttpPost]
+        [Route("register-test")]
+        public async Task<IActionResult> RegisterTest(UserRegisterRequestTestingModel request)
+        {
+            await _userService.RegisterTest(request);
+            return Ok("Register successfully!");
+        }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(UserLoginRequestModel request)

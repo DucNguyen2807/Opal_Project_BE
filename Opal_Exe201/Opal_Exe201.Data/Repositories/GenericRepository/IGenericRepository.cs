@@ -25,5 +25,6 @@ namespace Opal_Exe201.Data.Repositories.GenericRepository
         void Delete(T entityToDelete);
         Task<bool> UpdateAsync(object id, T entityToUpdate);
         void Update(T entityToUpdate);
+        Task<int> CountAsync(Expression<Func<T, bool>>? filter = null);
     }
 }

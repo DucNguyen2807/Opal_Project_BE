@@ -56,7 +56,7 @@ namespace Opal_Exe201.Service.Services.TaskServices
             var userId = JWTGenerate.DecodeToken(token, "UserId");
 
             var tasks = await _unitOfWork.TaskRepository.GetAsync(
-                filter: m => m.DueDate.HasValue && m.DueDate.Value.Date == date.Date && m.UserId == userId && m.Priority.Equals("Quan Trọng"),
+                filter: m => m.DueDate.HasValue && m.DueDate.Value.Date == date.Date && m.UserId == userId && m.Priority.Equals("Quan trọng"),
                 orderBy: q => q.OrderByDescending(t => t.IsCompleted).ThenBy(t => t.TimeTask)
             );
 

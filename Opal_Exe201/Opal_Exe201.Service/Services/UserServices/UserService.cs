@@ -6,6 +6,7 @@ using Opal_Exe201.Service.Utils;
 using Opal_Exe201.Data.Enums.UserEnums;
 using Azure.Core;
 using Opal_Exe201.Service.Services.EmailServices;
+using System.Linq.Expressions;
 
 namespace Opal_Exe201.Service.Services.UserServices
 {
@@ -78,7 +79,6 @@ namespace Opal_Exe201.Service.Services.UserServices
 
         public async System.Threading.Tasks.Task Register(UserRegisterRequestModel request)
         {
-            // Kiểm tra xem username đã tồn tại chưa
             User currentUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.Username.Equals(request.Username))).FirstOrDefault();
 
             if (currentUser != null)
@@ -123,12 +123,54 @@ namespace Opal_Exe201.Service.Services.UserServices
 
             await _unitOfWork.SeedRepository.InsertAsync(newSeed);
 
-            _unitOfWork.Save();
-
-            
-            
-
+            _unitOfWork.Save();   
         }
+
+        public async System.Threading.Tasks.Task RegisterTest(UserRegisterRequestTestingModel request)
+        {
+            User currentUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.Email.Equals(request.Email))).FirstOrDefault();
+
+            if (currentUser != null)
+            {
+                throw new CustomException("User email existed!");
+            }
+
+            User newUser = _mapper.Map<User>(request);
+            newUser.Email = request.Email;
+            newUser.Username = request.Email;
+            newUser.Fullname = request.Fullname;
+            newUser.UserId = Guid.NewGuid().ToString();
+            newUser.PhoneNumber = request.PhoneNumber;
+            newUser.Role = request.Role;
+            var  hash = PasswordHasher.HashPassword(request.Password);
+            newUser.Password = hash;
+
+            await _unitOfWork.UsersRepository.InsertAsync(newUser);
+            _unitOfWork.Save();
+        }
+
+        public async Task<GetAllUserResponseModel> GetAllUser(string searchQuery, int pageIndex, int pageSize)
+        {
+            Expression<Func<User, bool>> searchFilter = u => string.IsNullOrEmpty(searchQuery) ||
+                                                               u.Email.Contains(searchQuery) ||
+                                                               u.PhoneNumber.Contains(searchQuery) ||
+                                                               u.Role.Contains(searchQuery);
+
+            var users = await _unitOfWork.UsersRepository.GetAsync(searchFilter, pageIndex: pageIndex, pageSize: pageSize);
+
+            var totalUser = await _unitOfWork.UsersRepository.CountAsync(searchFilter);
+
+            var userResponses = _mapper.Map<List<ViewUserResponseModel>>(users);
+
+            return new GetAllUserResponseModel
+            {
+                Users = userResponses,
+                TotalUser = totalUser
+            };
+        }
+
+
+
 
         public async System.Threading.Tasks.Task ResetPassword(UserResetPasswordRequestModel request)
         {
@@ -177,6 +219,8 @@ namespace Opal_Exe201.Service.Services.UserServices
             _unitOfWork.Save();
 
         }
+
+
 
         public async System.Threading.Tasks.Task UpdateUser(UpdateByUserModel request, string token)
         {
