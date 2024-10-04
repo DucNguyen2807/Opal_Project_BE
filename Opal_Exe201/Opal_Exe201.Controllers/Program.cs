@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Opal_Exe201.Service.Services.Hangfire;
 using Opal_Exe201.Service.Hubs;
+using Opal_Exe201.Service.Services.SeedServices;
 using Opal_Exe201.Service.Services.PaymentServices;
 using Opal_Exe201.Service.Services.SubscriptionServices;
 
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IOTPService, OTPService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
@@ -58,6 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
+            NameClaimType = "UserId"
         };
         options.Events = new JwtBearerEvents
         {

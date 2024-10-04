@@ -1,4 +1,5 @@
-﻿using Opal_Exe201.Data.Repositories.CustomizationRepositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Opal_Exe201.Data.Repositories.CustomizationRepositories;
 using Opal_Exe201.Data.Repositories.EventRepositories;
 using Opal_Exe201.Data.Repositories.NotificationRepositories;
 using Opal_Exe201.Data.Repositories.OTPCodeRepositories;
@@ -24,6 +25,7 @@ namespace Opal_Exe201.Data.UnitOfWorks
         IUserRepository UsersRepository { get; }
         IUserSubRepository UserSubRepository { get; }
         IOTPCodeRepository OTPCodeRepository { get; }
+        Task<IDbContextTransaction> BeginTransactionAsync();
 
         Task SaveAsync();
         void Save();

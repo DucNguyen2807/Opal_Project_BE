@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Opal_Exe201.Data.DTOs.EventDTOS;
+using Opal_Exe201.Data.DTOs.SeedDTOS;
 using Opal_Exe201.Data.DTOs.PaymentService;
 using Opal_Exe201.Data.DTOs.SubscriptionsDTOs;
 using Opal_Exe201.Data.DTOs.TaskDTOs;
@@ -20,6 +21,10 @@ namespace Opal_Exe201.Data.Mapper
             //Event
             CreateMap<Event, EventCreateRequest>().ReverseMap();
             CreateMap<Event, EventResponse>().ReverseMap();
+
+            //Seed
+            CreateMap<Seed, FeedingResponseModel>()
+                .ForMember(dest => dest.Message, opt => opt.Ignore());
 
             //Task
             CreateMap<TaskCreateRequestModel, Opal_Exe201.Data.Models.Task>()
