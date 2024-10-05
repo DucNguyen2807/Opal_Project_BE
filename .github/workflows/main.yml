@@ -1,16 +1,20 @@
-name: toi muon duoc deployyyy
+name: Tôi muốn được deployyyy
 
 on:
   push:
     branches:
       - main
-      
+
 jobs:
   docker-compose:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Đảm bảo runner có nhãn này
     environment: docker
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Cập nhật lên v3 để tránh lỗi liên quan đến Node.js
+
+    - name: List files  # Kiểm tra các tệp có sẵn trong thư mục
+      run: ls -al
+
     - name: Run 'docker compose'
-      run: docker compose up --build -d
+      run: docker compose -f compose.yaml up --build -d  # Sử dụng tệp compose.yaml nếu tên không phải là docker-compose.yml
