@@ -1,4 +1,4 @@
-name: Tôi muốn được deployyyy
+name: Deploy Opal
 
 on:
   push:
@@ -10,12 +10,11 @@ jobs:
     runs-on: self-hosted
     environment: docker
     steps:
-    - name: Check out code
-      uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v2
+        
+      - name: Check if compose.yaml exists
+        run: ls -al /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/
 
-    - name: List work directory
-      run: ls -al /home/ubuntu/actions-runner/actions-runner/_work/Opal_Project_BE
-
-    - name: Run 'docker compose'
-      run: docker compose -f ${{ github.workspace }}/Opal_Exe201/compose.yaml up --build -d
-
+      - name: Run 'docker compose'
+        run: docker compose -f /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/compose.yaml up --build -d
