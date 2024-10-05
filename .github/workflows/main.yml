@@ -17,4 +17,5 @@ jobs:
       run: ls -al /home/ubuntu/actions-runner/actions-runner/_work/Opal_Project_BE
 
     - name: Run 'docker compose'
-      run: docker compose -f /home/ubuntu/actions-runner/actions-runner/_work/Opal_Project_BE/Opal_Exe201/compose.yaml up --build -d
+      run: docker compose -f ${{ github.workspace }}/Opal_Exe201/compose.yaml up --build -d
+
