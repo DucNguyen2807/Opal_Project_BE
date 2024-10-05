@@ -116,6 +116,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+Console.WriteLine($"Connection String: {connectionString}");
+
+
 builder.Services.AddHangfire(config =>
 {
     config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionString"));
