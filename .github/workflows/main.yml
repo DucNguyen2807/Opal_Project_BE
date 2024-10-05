@@ -7,14 +7,14 @@ on:
 
 jobs:
   docker-compose:
-    runs-on: self-hosted  # Đảm bảo runner có nhãn này
+    runs-on: self-hosted
     environment: docker
     steps:
     - name: Check out code
-      uses: actions/checkout@v3  # Cập nhật lên v3 để tránh lỗi liên quan đến Node.js
+      uses: actions/checkout@v3
 
-    - name: List files  # Kiểm tra các tệp có sẵn trong thư mục
-      run: ls -al
+    - name: List files
+      run: ls -al /home/ubuntu/actions-runner/actions-runner/_work/Opal_Project_BE/Opal_Exe201
 
     - name: Run 'docker compose'
-      run: docker compose -f compose.yaml up --build -d  # Sử dụng tệp compose.yaml nếu tên không phải là docker-compose.yml
+      run: docker compose -f /home/ubuntu/actions-runner/actions-runner/_work/Opal_Project_BE/Opal_Exe201/compose.yaml up --build -d
