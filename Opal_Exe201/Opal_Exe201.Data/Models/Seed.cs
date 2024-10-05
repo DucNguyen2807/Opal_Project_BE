@@ -13,7 +13,7 @@ public partial class Seed
 
     public int? SeedCount { get; set; }
 
-    public int? ParrotLevel { get; set; }
+    public int ParrotLevel { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

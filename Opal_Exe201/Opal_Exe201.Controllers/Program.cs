@@ -142,9 +142,9 @@ app.UseEndpoints(endpoints =>
 });
 
 // Register the recurring job
-RecurringJob.AddOrUpdate<NotificationJob>(
-    job => job.CheckAndSendNotifications(),
-    Cron.Minutely);
+//RecurringJob.AddOrUpdate<NotificationJob>(
+//    job => job.CheckAndSendNotifications(),
+//    Cron.Minutely);
 
 // Run the application
 app.Run();
