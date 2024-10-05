@@ -10,16 +10,22 @@ on:
   
 jobs:
   docker-compose:
-    runs-on: self-hosted  # Kiểm tra runner có nhãn này
+    runs-on: self-hosted
     steps:
     - name: Check out code
-      uses: actions/checkout@v3  # Sử dụng phiên bản mới nhất của checkout
+      uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx  # Optional: Set up Docker Buildx for multi-platform builds
+    - name: Install Docker Buildx
+      run: |
+        mkdir -p ~/.docker/cli-plugins/
+        curl -SL https://github.com/docker/buildx/releases/download/v0.10.0/buildx-v0.10.0.linux-amd64 -o ~/.docker/cli-plugins/docker-buildx
+        chmod +x ~/.docker/cli-plugins/docker-buildx
+
+    - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Log in to Docker Hub  # Nếu cần đăng nhập Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: Create builder
+      run: docker buildx create --use
 
     - name: Run 'docker compose'
       run: docker compose up --build -d
