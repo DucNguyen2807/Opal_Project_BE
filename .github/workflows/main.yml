@@ -7,10 +7,11 @@ on:
   pull_request:
     branches:
       - main
-  
+
 jobs:
   docker-compose:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Đảm bảo runner có nhãn này và đã thêm vào nhóm docker
+    environment: docker
     steps:
     - name: Check out code
       uses: actions/checkout@v3
