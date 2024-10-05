@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Opal_Exe201.Data\Opal_Exe201.Data.csproj" />
     <ProjectReference Include="..\Opal_Exe201.Service\Opal_Exe201.Service.csproj" />
   </ItemGroup>
 
