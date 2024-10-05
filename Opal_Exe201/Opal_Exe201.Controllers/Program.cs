@@ -128,11 +128,11 @@ builder.Services.AddHangfireServer();
 // Build and configure the HTTP request pipeline
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
