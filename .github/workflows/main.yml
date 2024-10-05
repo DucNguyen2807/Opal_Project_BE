@@ -1,0 +1,20 @@
+name: Deploy Opal
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  
+jobs:
+  docker-compose:
+    runs-on: self hosted
+    environment: docker
+    steps:
+    - name: Check code 
+      uses: actions/checkout@v2
+
+    - name: Run 'docker compose'
+      run: docker compose up --build -d
