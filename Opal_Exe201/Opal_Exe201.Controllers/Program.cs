@@ -17,8 +17,6 @@ using Opal_Exe201.Service.Hubs;
 using Opal_Exe201.Service.Services.SeedServices;
 using Opal_Exe201.Service.Services.PaymentServices;
 using Opal_Exe201.Service.Services.SubscriptionServices;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,34 +116,22 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 Console.WriteLine($"Connection String: {connectionString}");
 
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("null");
-}
 
 builder.Services.AddHangfire(config =>
 {
-    config.UseSqlServerStorage(connectionString); 
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionString"));
     config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
     config.UseSimpleAssemblyNameTypeSerializer();
     config.UseRecommendedSerializerSettings();
 });
-
-
 builder.Services.AddHangfireServer();
-
-
-
 
 // Build and configure the HTTP request pipeline
 var app = builder.Build();
 
-// Swagger
 //if (app.Environment.IsDevelopment())
 //{
     app.UseSwagger();
@@ -161,18 +147,14 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/notificationhub");
-    endpoints.MapHangfireDashboard("/hangfire", new DashboardOptions
-    {
-        Authorization = new[] { new AllowAnonymousDashboardAuthorizationFilter() }
-    });
+    endpoints.MapHangfireDashboard();
     endpoints.MapControllers();
 });
 
 // Register the recurring job
-// RecurringJob.AddOrUpdate<NotificationJob>(
-//     job => job.CheckAndSendNotifications(),
-//     Cron.Minutely
-// );
+//RecurringJob.AddOrUpdate<NotificationJob>(
+//    job => job.CheckAndSendNotifications(),
+//    Cron.Minutely);
 
 // Run the application
 app.Run();
