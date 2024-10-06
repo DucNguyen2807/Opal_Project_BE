@@ -11,10 +11,16 @@ jobs:
     environment: docker
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Check if compose.yaml exists
-        run: ls -al /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/
+        run: |
+          if [ ! -f /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/compose.yaml ]; then
+            echo "compose.yaml not found!"
+            exit 1
+          fi
+          ls -al /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/
 
       - name: Run 'docker compose'
-        run: docker compose -f /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/compose.yaml up --build -d
+        run: |
+          docker compose -f /home/ubuntu/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/compose.yaml up --build -d
