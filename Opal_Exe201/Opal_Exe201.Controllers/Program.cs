@@ -138,6 +138,9 @@ var app = builder.Build();
     app.UseSwaggerUI();
 //}
 
+
+
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseRouting();
@@ -147,7 +150,11 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/notificationhub");
-    endpoints.MapHangfireDashboard();
+
+    endpoints.MapHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new[] { new AllowAnonymousDashboardAuthorizationFilter() }
+    });
     endpoints.MapControllers();
 });
 
