@@ -17,6 +17,8 @@ public partial class User
 
     public string? Gender { get; set; }
 
+    public string? Devicetoken { get; set; }
+
     public string? PhoneNumber { get; set; }
 
     public string? SubscriptionPlan { get; set; }

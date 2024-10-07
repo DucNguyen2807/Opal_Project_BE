@@ -1,3 +1,5 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -6,17 +8,12 @@ using Opal_Exe201.Data.Mapper;
 using Opal_Exe201.Service.Services.EmailServices;
 using Opal_Exe201.Service.Services.EventServices;
 using Opal_Exe201.Service.Services.OTPService;
+using Opal_Exe201.Service.Services.PaymentServices;
+using Opal_Exe201.Service.Services.SeedServices;
+using Opal_Exe201.Service.Services.SubscriptionServices;
 using Opal_Exe201.Service.Services.TaskServices;
 using Opal_Exe201.Service.Services.UserServices;
-using Hangfire;
 using System.Text;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Authorization;
-using Opal_Exe201.Service.Services.Hangfire;
-using Opal_Exe201.Service.Hubs;
-using Opal_Exe201.Service.Services.SeedServices;
-using Opal_Exe201.Service.Services.PaymentServices;
-using Opal_Exe201.Service.Services.SubscriptionServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +23,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabase();
 builder.Services.AddUnitOfWork();
+
+// Firebase Admin
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("firebase_credentials.json"),
+});
 
 // Dependency Injection
 builder.Services.AddScoped<IUserService, UserService>();
@@ -37,15 +40,7 @@ builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
-
-builder.Services.AddTransient<NotificationJob>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
-
-// SignalR
-builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-});
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -60,21 +55,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
-            NameClaimType = "UserId"
-        };
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
-                var path = context.HttpContext.Request.Path;
-
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationhub"))
-                {
-                    context.Token = accessToken;
-                }
-                return Task.CompletedTask;
-            }
         };
     });
 
@@ -88,7 +68,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Swagger & Hangfire
+// Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -116,15 +96,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddHangfire(config =>
-{
-    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
-    config.UseSimpleAssemblyNameTypeSerializer();
-    config.UseRecommendedSerializerSettings();
-});
-builder.Services.AddHangfireServer();
-
 // Build and configure the HTTP request pipeline
 var app = builder.Build();
 
@@ -142,15 +113,8 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<NotificationHub>("/notificationhub");
-    endpoints.MapHangfireDashboard();
     endpoints.MapControllers();
 });
-
-// Register the recurring job
-RecurringJob.AddOrUpdate<NotificationJob>(
-    job => job.CheckAndSendNotifications(),
-    Cron.Minutely);
 
 // Run the application
 app.Run();

@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace Opal_Exe201.Service.Services.Hangfire
 {
-    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+    public class AllowAnonymousDashboardAuthorizationFilter : IDashboardAuthorizationFilter
     {
         public bool Authorize(DashboardContext context)
         {
-            var httpContext = context.GetHttpContext();
-            return httpContext.User.Identity.IsAuthenticated && httpContext.User.IsInRole("Admin");
+            return true;
         }
     }
 }
