@@ -22,6 +22,36 @@ namespace Opal_Exe201.Service.Services.SeedServices
             _logger = logger;
         }
 
+
+        public async Task<ParrotResponseModel> GetParrotInfoAsync(string token)
+        {
+            try
+            {
+                var userId = JWTGenerate.DecodeToken(token, "UserId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new ArgumentException("Invalid user token.");
+                }
+
+                var seed = await _unitOfWork.SeedRepository.GetSeedByUserIdAsync(userId);
+
+                if (seed == null)
+                {
+                    throw new InvalidOperationException("No seed record found. Please acquire seeds before viewing your parrot.");
+                }
+
+                var parrotViewModel = _mapper.Map<ParrotResponseModel>(seed);
+
+                return parrotViewModel;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving parrot info for UserId: {UserId}", JWTGenerate.DecodeToken(token, "UserId"));
+                throw;
+            }
+        }
+
+
         public async Task<FeedingResponseModel> FeedParrotAsync(FeedingRequestModel feedRequest, string token)
         {
             using var transaction = await _unitOfWork.BeginTransactionAsync();

@@ -10,5 +10,6 @@ namespace Opal_Exe201.Service.Services.SeedServices
     public interface ISeedService
     {
         Task<FeedingResponseModel> FeedParrotAsync(FeedingRequestModel feedRequest, string token);
+        Task<ParrotResponseModel> GetParrotInfoAsync(string token);
     }
 }

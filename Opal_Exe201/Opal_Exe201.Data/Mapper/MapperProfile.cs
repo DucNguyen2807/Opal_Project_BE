@@ -25,6 +25,11 @@ namespace Opal_Exe201.Data.Mapper
             //Seed
             CreateMap<Seed, FeedingResponseModel>()
                 .ForMember(dest => dest.Message, opt => opt.Ignore());
+            CreateMap<Seed, ParrotResponseModel>()
+                .ForMember(dest => dest.ParrotLevel, opt => opt.MapFrom(src => src.ParrotLevel))
+                .ForMember(dest => dest.SeedCount, opt => opt.MapFrom(src => src.SeedCount))
+                .ForMember(dest => dest.PercentGrowth, opt => opt.MapFrom(src => src.PercentGrowth));
+   
 
             //Task
             CreateMap<TaskCreateRequestModel, Opal_Exe201.Data.Models.Task>()
