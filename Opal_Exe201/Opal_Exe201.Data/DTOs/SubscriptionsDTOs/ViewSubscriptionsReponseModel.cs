@@ -18,7 +18,7 @@ namespace Opal_Exe201.Data.DTOs.SubscriptionsDTOs
 
         public string SubName { get; set; } = null!;
 
-        public DateOnly Duration { get; set; }
+        public int Duration { get; set; }
 
         public decimal? Price { get; set; }
 

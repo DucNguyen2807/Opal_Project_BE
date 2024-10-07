@@ -9,7 +9,7 @@ public partial class Subscription
 
     public string SubName { get; set; } = null!;
 
-    public DateOnly Duration { get; set; }
+    public int Duration { get; set; }
 
     public decimal? Price { get; set; }
 

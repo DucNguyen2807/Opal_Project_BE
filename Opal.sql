@@ -81,7 +81,7 @@ GO
 CREATE TABLE Subscriptions (
     subscription_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
     SubName NVARCHAR(150) NOT NULL,
-    Duration DATE NOT NULL,
+    Duration INT NOT NULL,
     Price DECIMAL(10, 2),
     SubDescription NVARCHAR(MAX) NOT NULL,
     status NVARCHAR(50), -- No default value

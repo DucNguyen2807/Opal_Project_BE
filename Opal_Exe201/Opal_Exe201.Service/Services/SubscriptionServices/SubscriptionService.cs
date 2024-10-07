@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Opal_Exe201.Data.DTOs.PaymentService;
 using Opal_Exe201.Data.DTOs.SubscriptionsDTOs;
+using Opal_Exe201.Data.Enums.SubscriptionEnums;
 using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.UnitOfWorks;
+using Opal_Exe201.Service.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,5 +42,39 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
                 TotalSubscription = totalSubscription
             };
         }
+        public async Task<bool> ToggleSubscriptionStatus(string subscriptionId)
+        {
+            var subscription = await _unitOfWork.SubscriptionRepository.GetByIDAsync(subscriptionId);
+
+            if (subscription == null)
+            {
+                throw new Exception("Subscription not found.");
+            }
+
+            subscription.Status = subscription.Status == "Active" ? "Inactive" : "Active";
+
+             _unitOfWork.SubscriptionRepository.UpdateAsync(subscriptionId, subscription);
+            await _unitOfWork.SaveAsync(); 
+
+            return true;
+        }
+        public async System.Threading.Tasks.Task UpdateCoinPack(SubscriptionUpdateRequestModel requestModel, string id)
+        {
+            if (id == null)
+            {
+                throw new CustomException("Please input id for update");
+            }
+            var subscription = await _unitOfWork.SubscriptionRepository.GetByIDAsync(id);
+            if (subscription == null)
+            {
+                throw new CustomException("Cant find the coin pack");
+            }
+            _mapper.Map(requestModel, subscription);
+            await _unitOfWork.SubscriptionRepository.UpdateAsync(id, subscription);
+            _unitOfWork.Save();
+        }
+
+
+
     }
 }

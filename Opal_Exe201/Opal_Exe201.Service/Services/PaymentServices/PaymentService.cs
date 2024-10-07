@@ -31,7 +31,7 @@ namespace Opal_Exe201.Service.Services.PaymentServices
                                                                u.PaymentMethod.Contains(searchQuery); 
             //||                                                   u.PaymentDate.Contains(searchQuery);
 
-            var payment = await _unitOfWork.PaymentRepository.GetAsync(searchFilter, pageIndex: pageIndex, pageSize: pageSize);
+            var payment = await _unitOfWork.PaymentRepository.GetAsync(searchFilter, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "User,Subscription");
 
             var totalPayment = await _unitOfWork.PaymentRepository.CountAsync(searchFilter);
 

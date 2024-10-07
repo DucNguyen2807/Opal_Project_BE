@@ -6,6 +6,7 @@ using Opal_Exe201.Data.DTOs.SubscriptionsDTOs;
 using Opal_Exe201.Data.DTOs.TaskDTOs;
 using Opal_Exe201.Data.DTOs.UserDTOs;
 using Opal_Exe201.Data.Models;
+using Opal_Exe201.Data.Enums.SubscriptionEnums;
 
 namespace Opal_Exe201.Data.Mapper
 {
@@ -32,12 +33,13 @@ namespace Opal_Exe201.Data.Mapper
                      src.TimeTask != null
                          ? new TimeOnly(src.TimeTask.Value.Hour, src.TimeTask.Value.Minute)
                          : (TimeOnly?)null));
-            //Payment
-            CreateMap<Payment, ViewPaymentReponseModel>().ReverseMap();
+            CreateMap<Payment, ViewPaymentReponseModel>()
+            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+            .ForMember(dest => dest.SubscriptionName, opt => opt.MapFrom(src => src.Subscription.SubName)); 
 
             //Subscriptions
             CreateMap<Subscription, ViewSubscriptionsReponseModel>().ReverseMap();
-
+            CreateMap<SubscriptionUpdateRequestModel, Subscription>().ReverseMap();
 
         }
     }

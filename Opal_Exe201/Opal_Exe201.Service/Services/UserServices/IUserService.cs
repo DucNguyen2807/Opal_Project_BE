@@ -12,5 +12,6 @@ namespace Opal_Exe201.Service.Services.UserServices
         Task<GetAllUserResponseModel> GetAllUser(string searchQuery, int pageIndex, int pageSize);
         System.Threading.Tasks.Task RegisterTest(UserRegisterRequestTestingModel request);
         Task ChangePassword(UserChangePasswordRequestModel model, string token);
+        System.Threading.Tasks.Task UpdateUserForAdmin(AdminUpdateUserResponseModel request, string id);
     }
 }

@@ -80,5 +80,15 @@ namespace Opal_Exe201.Controllers.Controllers
             return Ok("Password changed successfully!");
         }
 
+        [HttpPut]
+        [Route("admin/update")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUserForAdmin([FromBody] AdminUpdateUserResponseModel request, string id)
+        {
+
+            await _userService.UpdateUserForAdmin(request, id);
+            return Ok("User updated successfully!");
+        }
+
     }
 }

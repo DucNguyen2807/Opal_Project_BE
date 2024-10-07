@@ -85,6 +85,13 @@ namespace Opal_Exe201.Service.Services.UserServices
             {
                 throw new CustomException("Username is already used to create account!");
             }
+            User phoneUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.PhoneNumber.Equals(request.PhoneNumber))).FirstOrDefault();
+
+            if (phoneUser != null)
+            {
+                throw new CustomException("Phone number is already used!");
+            }
+
 
             User newUser = _mapper.Map<User>(request);
             newUser.UserId = Guid.NewGuid().ToString();
@@ -134,6 +141,13 @@ namespace Opal_Exe201.Service.Services.UserServices
             {
                 throw new CustomException("User email existed!");
             }
+            User phoneUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.PhoneNumber.Equals(request.PhoneNumber))).FirstOrDefault();
+
+            if (phoneUser != null)
+            {
+                throw new CustomException("Phone number is already used!");
+            }
+
 
             User newUser = _mapper.Map<User>(request);
             newUser.Email = request.Email;
@@ -234,8 +248,13 @@ namespace Opal_Exe201.Service.Services.UserServices
             {
                 user.Fullname = request.Fullname;
             }
-            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            if (!string.IsNullOrEmpty(request.PhoneNumber) && !user.PhoneNumber.Equals(request.PhoneNumber))
             {
+                var existingPhoneUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.PhoneNumber.Equals(request.PhoneNumber))).FirstOrDefault();
+                if (existingPhoneUser != null)
+                {
+                    throw new CustomException("Phone number is already used!");
+                }
                 user.PhoneNumber = request.PhoneNumber;
             }
             if (!string.IsNullOrEmpty(request.Email))
@@ -251,5 +270,34 @@ namespace Opal_Exe201.Service.Services.UserServices
             _unitOfWork.Save();
         }
 
+        public async System.Threading.Tasks.Task UpdateUserForAdmin(AdminUpdateUserResponseModel request, string id)
+        {
+
+            var user = await _unitOfWork.UsersRepository.GetByIDAsync(id);
+
+
+            if (!string.IsNullOrEmpty(request.PhoneNumber) && !user.PhoneNumber.Equals(request.PhoneNumber))
+            {
+                var existingPhoneUser = (await _unitOfWork.UsersRepository.GetAsync(u => u.PhoneNumber.Equals(request.PhoneNumber))).FirstOrDefault();
+                if (existingPhoneUser != null)
+                {
+                    throw new CustomException("Phone number is already used!");
+                }
+                user.PhoneNumber = request.PhoneNumber;
+            }
+
+            if (!string.IsNullOrEmpty(request.Fullname))
+            {
+                user.Fullname = request.Fullname;
+            }
+
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                user.PhoneNumber = request.PhoneNumber;
+            }
+
+             _unitOfWork.UsersRepository.Update(user);
+            _unitOfWork.Save();
+        }
     }
 }

@@ -28,5 +28,9 @@ namespace Opal_Exe201.Data.DTOs.PaymentService
         public DateTime? PaymentDate { get; set; }
 
         public string? Status { get; set; }
+
+        public string UserEmail { get; set; } = null!;
+        public string SubscriptionName { get; set; } = null!;
+
     }
 }
