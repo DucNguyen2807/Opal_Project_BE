@@ -16,7 +16,6 @@
 
 # .gitignore
 
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -399,13 +398,9 @@ FodyWeavers.xsd
 # Windows Installer files from build outputs
 *.cab
 *.msi
-*.msix
 *.msm
-*.msp
 
-# JetBrains Rider
-*.sln.iml
+# Content of your .gitignore here
 
-### VisualStudio Patch ###
-# Additional files built by Visual Studio
-
+# Firebase credentials
+Opal_Exe201/Opal_Exe201.Controllers/firebase_credentials.json
