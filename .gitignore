@@ -402,5 +402,3 @@ FodyWeavers.xsd
 
 # Content of your .gitignore here
 
-# Firebase credentials
-Opal_Exe201/Opal_Exe201.Controllers/firebase_credentials.json
