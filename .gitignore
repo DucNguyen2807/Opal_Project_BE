@@ -75,8 +75,7 @@ ScaffoldingReadMe.txt
 # StyleCop
 StyleCopReport.xml
 
-# .gitignore
-appsettings.json
+
 
 # Files built by Visual Studio
 *_i.c
