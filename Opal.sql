@@ -14,6 +14,7 @@ CREATE TABLE Users (
 	gender NVARCHAR(100),
     phone_number VARCHAR(20),
     subscription_plan NVARCHAR(50), -- No default value
+	Devicetoken Nvarchar(100),
     role NVARCHAR(50), -- New role column
     created_at DATETIME,
     updated_at DATETIME
