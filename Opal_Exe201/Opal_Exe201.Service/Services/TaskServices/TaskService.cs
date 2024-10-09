@@ -104,12 +104,17 @@ namespace Opal_Exe201.Service.Services.TaskServices
                     return false;
                 }
 
-                bool wasCompleted = task.IsCompleted ?? false;
-                task.IsCompleted = !wasCompleted;
+                if (task.IsCompleted.HasValue && task.IsCompleted.Value)
+                {
+                    _logger.LogInformation("Task {TaskId} đã hoàn thành, không thể thay đổi trạng thái.", taskId);
+                    return false;
+                }
+
+                task.IsCompleted = true;
                 task.Status = task.IsCompleted.Value ? "True" : "False";
                 _unitOfWork.TaskRepository.Update(task);
 
-                if (!wasCompleted && task.IsCompleted.Value)
+                if (task.IsCompleted.Value)
                 {
                     var seed = await _unitOfWork.SeedRepository.GetSeedByUserIdAsync(userId);
 
@@ -142,6 +147,7 @@ namespace Opal_Exe201.Service.Services.TaskServices
                 throw;
             }
         }
+
         public async System.Threading.Tasks.Task InsertTaskAsync(TaskCreateRequestModel taskRequest, string token)
         {
             var userId = JWTGenerate.DecodeToken(token, "UserId");
