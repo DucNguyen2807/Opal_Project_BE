@@ -17,8 +17,6 @@ public partial class User
 
     public string? Gender { get; set; }
 
-    public string? Devicetoken { get; set; }
-
     public string? PhoneNumber { get; set; }
 
     public string? SubscriptionPlan { get; set; }
@@ -28,6 +26,8 @@ public partial class User
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+
+    public string? Devicetoken { get; set; }
 
     public virtual ICollection<Customization> Customizations { get; set; } = new List<Customization>();
 

@@ -7,6 +7,7 @@ using Opal_Exe201.Controllers.Extensions;
 using Opal_Exe201.Data.Mapper;
 using Opal_Exe201.Service.Services.EmailServices;
 using Opal_Exe201.Service.Services.EventServices;
+using Opal_Exe201.Service.Services.NotificationServices;
 using Opal_Exe201.Service.Services.OTPService;
 using Opal_Exe201.Service.Services.PaymentServices;
 using Opal_Exe201.Service.Services.SeedServices;
@@ -14,6 +15,7 @@ using Opal_Exe201.Service.Services.SubscriptionServices;
 using Opal_Exe201.Service.Services.TaskServices;
 using Opal_Exe201.Service.Services.UserServices;
 using System.Text;
+using static Opal_Exe201.Service.Services.FirebaseService.SendNotificationToFirebase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,9 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<IDeviceTokenService, DeviceTokenService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddHostedService<NotificationBackgroundService>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 

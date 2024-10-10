@@ -15,10 +15,7 @@ public partial class OpalExeContext : DbContext
         : base(options)
     {
     }
-
-
-
-
+    
     public virtual DbSet<Customization> Customizations { get; set; }
 
     public virtual DbSet<Event> Events { get; set; }
@@ -340,9 +337,7 @@ public partial class OpalExeContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
-            entity.Property(e => e.Devicetoken)
-                .HasMaxLength(100)
-                .HasColumnName("devicetoken");
+            entity.Property(e => e.Devicetoken).HasColumnName("devicetoken");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false)

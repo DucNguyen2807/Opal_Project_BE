@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Opal_Exe201.Service.Services.FirebaseService.SendNotificationToFirebase;
 
@@ -10,21 +9,25 @@ namespace Opal_Exe201.Service.Services.NotificationServices
 {
     public class NotificationBackgroundService : BackgroundService
     {
-        private readonly NotificationService _notificationService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public NotificationBackgroundService(NotificationService notificationService)
+        public NotificationBackgroundService(IServiceProvider serviceProvider)
         {
-            _notificationService = notificationService;
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _notificationService.CheckAndSendNotificationsAsync();
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
+                    await notificationService.CheckAndSendNotificationsAsync();
+                }
+
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
     }
-
 }

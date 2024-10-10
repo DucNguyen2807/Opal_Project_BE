@@ -1,26 +1,55 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.SignalR;
-//using Opal_Exe201.Controllers.Hubs;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Opal_Exe201.Data.DTOs.DeviceTokenDTOS;
+using Opal_Exe201.Service.Services.NotificationServices;
 
-//namespace Opal_Exe201.Controllers.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class NotificationController : ControllerBase
-//    {
-//        private readonly IHubContext<NotificationHub> _hubContext;
+namespace Opal_Exe201.Controllers.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class NotificationController : ControllerBase
+    {
+        private readonly IDeviceTokenService _devicetokenService;
 
-//        public NotificationController(IHubContext<NotificationHub> hubContext)
-//        {
-//            _hubContext = hubContext;
-//        }
+        public NotificationController(IDeviceTokenService devicetokenService)
+        {
+            _devicetokenService = devicetokenService;
+        }
 
-//        [HttpPost("send-notification")]
-//        public async Task<IActionResult> SendNotification([FromBody] string message)
-//        {
-//            await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
-//            return Ok();
-//        }
-//    }
-//}
+        [HttpPost("save_device_token")]
+        public async Task<IActionResult> SaveDeviceToken([FromBody] DeviceTokenRequestModel model)
+        {
+            // Extract the token from the Authorization header
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Unauthorized("Authorization token is missing.");
+            }
+
+            try
+            {
+                var result = await _devicetokenService.SaveDeviceTokenAsync(token, model.Devicetoken);
+
+                if (!result)
+                {
+                    return NotFound("User not found or device token could not be updated.");
+                }
+
+                return Ok("Device token saved successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while saving the device token.");
+            }
+        }
+    }
+}
