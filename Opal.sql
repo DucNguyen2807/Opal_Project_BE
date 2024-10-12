@@ -158,4 +158,45 @@ CREATE TABLE RefreshTokens (
 GO
 
 
- 
+  -- Tạo 10 gói đăng ký với subscription_id khác nhau
+INSERT INTO Subscriptions (subscription_id, SubName, Duration, Price, SubDescription, status)
+VALUES 
+(NEWID(), 'Basic Plan', 1, 500000, '1-month basic subscription', 'Active '),
+(NEWID(), 'Standard Plan', 3, 12000, '3-month standard subscription', 'Active '),
+(NEWID(), 'Premium Plan', 6, 19000, '6-month premium subscription', 'Active '),
+(NEWID(), 'Enterprise Plan', 12, 39000, '12-month enterprise subscription', 'Active '),
+(NEWID(), 'Student Plan', 12, 90000, '12-month student subscription', 'Active '),
+(NEWID(), 'Family Plan', 6, 29999, '6-month family subscription', 'Active '),
+(NEWID(), 'Pro Plan', 1, 15000, '1-month pro subscription', 'Active '),
+(NEWID(), 'Advanced Plan', 3, 2500000, '3-month advanced subscription', 'Active '),
+(NEWID(), 'Ultimate Plan', 12, 45000, '12-month ultimate subscription', 'Active '),
+(NEWID(), 'VIP Plan', 12, 99000, '12-month VIP subscription', 'Active ');
+
+
+-- Tạo 10 bản ghi thanh toán và liên kết với 10 gói đăng ký khác nhau
+INSERT INTO Payments (payment_id, user_id, subscription_id, transaction_id, amount, payment_method, payment_date, status)
+VALUES 
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Basic Plan'), 'TXN1234567891', 500000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Standard Plan'), 'TXN1234567892', 12999, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Premium Plan'), 'TXN1234567893', 199999, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Enterprise Plan'), 'TXN1234567894', 390000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Student Plan'), 'TXN1234567895', 999000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Family Plan'), 'TXN1234567896', 29000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Pro Plan'), 'TXN1234567897', 156000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Advanced Plan'), 'TXN1234567898', 250000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Ultimate Plan'), 'TXN1234567899', 4950000, 'Credit Card', GETDATE(), 'Completed'),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'VIP Plan'), 'TXN1234567810', 999000, 'Credit Card', GETDATE(), 'Completed');
+
+-- Tạo 10 bản ghi gói đăng ký người dùng
+INSERT INTO UserSub (UserSubID, user_id, subscription_id, start_date, end_date, status, created_at)
+VALUES
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Basic Plan'), GETDATE(), DATEADD(MONTH, 1, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Standard Plan'), GETDATE(), DATEADD(MONTH, 3, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Premium Plan'), GETDATE(), DATEADD(MONTH, 6, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Enterprise Plan'), GETDATE(), DATEADD(MONTH, 12, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Student Plan'), GETDATE(), DATEADD(MONTH, 12, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Family Plan'), GETDATE(), DATEADD(MONTH, 6, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Pro Plan'), GETDATE(), DATEADD(MONTH, 1, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Advanced Plan'), GETDATE(), DATEADD(MONTH, 3, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'Ultimate Plan'), GETDATE(), DATEADD(MONTH, 12, GETDATE()), 'Active ', GETDATE()),
+(NEWID(), 'ec6514b1-4600-45ad-9e67-b8424dd580db', (SELECT subscription_id FROM Subscriptions WHERE SubName = 'VIP Plan'), GETDATE(), DATEADD(MONTH, 12, GETDATE()), 'Active ', GETDATE());
