@@ -7,8 +7,6 @@ public partial class Customization
 {
     public string CustomizationId { get; set; } = null!;
 
-    public string? UserId { get; set; }
-
     public string? UiColor { get; set; }
 
     public string? FontColor { get; set; }
@@ -23,5 +21,5 @@ public partial class Customization
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual ICollection<UserCustomization> UserCustomizations { get; set; } = new List<UserCustomization>();
 }

@@ -29,8 +29,6 @@ public partial class User
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<Customization> Customizations { get; set; } = new List<Customization>();
-
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
@@ -44,6 +42,8 @@ public partial class User
     public virtual ICollection<Seed> Seeds { get; set; } = new List<Seed>();
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
+    public virtual ICollection<UserCustomization> UserCustomizations { get; set; } = new List<UserCustomization>();
 
     public virtual ICollection<UserSub> UserSubs { get; set; } = new List<UserSub>();
 }

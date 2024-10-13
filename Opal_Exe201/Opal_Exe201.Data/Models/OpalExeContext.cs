@@ -15,6 +15,7 @@ public partial class OpalExeContext : DbContext
         : base(options)
     {
     }
+
     public virtual DbSet<Customization> Customizations { get; set; }
 
     public virtual DbSet<Event> Events { get; set; }
@@ -35,8 +36,9 @@ public partial class OpalExeContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<UserSub> UserSubs { get; set; }
+    public virtual DbSet<UserCustomization> UserCustomizations { get; set; }
 
+    public virtual DbSet<UserSub> UserSubs { get; set; }
     private string GetConnectionString()
     {
         IConfiguration configuration = new ConfigurationBuilder()
@@ -44,16 +46,17 @@ public partial class OpalExeContext : DbContext
                 .AddJsonFile("appsettings.json", true, true).Build();
         return configuration["ConnectionStrings:DefaultConnectionString"];
     }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(GetConnectionString());
     }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customization>(entity =>
         {
-            entity.HasKey(e => e.CustomizationId).HasName("PK__Customiz__D1DF8D894A9DAA13");
+            entity.HasKey(e => e.CustomizationId).HasName("PK__Customiz__D1DF8D89012914DE");
 
             entity.Property(e => e.CustomizationId)
                 .HasMaxLength(36)
@@ -80,13 +83,6 @@ public partial class OpalExeContext : DbContext
             entity.Property(e => e.UiColor)
                 .HasMaxLength(50)
                 .HasColumnName("ui_color");
-            entity.Property(e => e.UserId)
-                .HasMaxLength(36)
-                .HasColumnName("user_id");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Customizations)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Customiza__user___59063A47");
         });
 
         modelBuilder.Entity<Event>(entity =>
@@ -379,6 +375,30 @@ public partial class OpalExeContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("username");
+        });
+
+        modelBuilder.Entity<UserCustomization>(entity =>
+        {
+            entity.HasKey(e => e.UserCustomizationId).HasName("PK__UserCust__9662E312F8FC6C9D");
+
+            entity.Property(e => e.UserCustomizationId)
+                .HasMaxLength(36)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("userCustomization_id");
+            entity.Property(e => e.CustomizationId)
+                .HasMaxLength(36)
+                .HasColumnName("customization_id");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(36)
+                .HasColumnName("user_id");
+
+            entity.HasOne(d => d.Customization).WithMany(p => p.UserCustomizations)
+                .HasForeignKey(d => d.CustomizationId)
+                .HasConstraintName("FK__UserCusto__custo__6A30C649");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserCustomizations)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__UserCusto__user___693CA210");
         });
 
         modelBuilder.Entity<UserSub>(entity =>
