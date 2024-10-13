@@ -21,13 +21,13 @@ public partial class User
 
     public string? SubscriptionPlan { get; set; }
 
+    public string? Devicetoken { get; set; }
+
     public string? Role { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
-    public string? Devicetoken { get; set; }
 
     public virtual ICollection<Customization> Customizations { get; set; } = new List<Customization>();
 
