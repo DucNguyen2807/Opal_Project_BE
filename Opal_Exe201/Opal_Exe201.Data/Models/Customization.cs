@@ -5,7 +5,7 @@ namespace Opal_Exe201.Data.Models;
 
 public partial class Customization
 {
-    public string CustomizationId { get; set; } = null!;
+    public int CustomizationId { get; set; }
 
     public string? UiColor { get; set; }
 

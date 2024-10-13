@@ -9,6 +9,7 @@ using Opal_Exe201.Data.Repositories.RefreshTokenRepositories;
 using Opal_Exe201.Data.Repositories.SeedRepositories;
 using Opal_Exe201.Data.Repositories.SubscriptionRepositories;
 using Opal_Exe201.Data.Repositories.TasksRepositories;
+using Opal_Exe201.Data.Repositories.UserCustomizeRepositories;
 using Opal_Exe201.Data.Repositories.UserRepositories;
 using Opal_Exe201.Data.Repositories.UserSubRepositories;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +30,7 @@ namespace Opal_Exe201.Data.UnitOfWorks
         private IUserRepository _userRepository;
         private IUserSubRepository _userSubRepository;
         private IOTPCodeRepository _otpCodeRepository;
-
+        private IUserCustomizeRepository _userCustomizeRepository;
 
 
         public UnitOfWork(OpalExeContext context)
@@ -115,6 +116,13 @@ namespace Opal_Exe201.Data.UnitOfWorks
             }
         }
 
+        public IUserCustomizeRepository UserCustomizeRepository
+        {
+            get
+            {
+                return _userCustomizeRepository ??= new UserCustomizeRepository(_context);
+            }
+        }
         public void Save()
         {
             var validationErrors = _context.ChangeTracker.Entries<IValidatableObject>()

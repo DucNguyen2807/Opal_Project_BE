@@ -119,14 +119,27 @@ CREATE TABLE Notifications (
 );
 GO
 
--- Custom
 CREATE TABLE Customizations (
-    customization_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
+    customization_id INT IDENTITY(1,1) PRIMARY KEY, -- Tự động tăng
+    ui_color NVARCHAR(50),
+    font_color NVARCHAR(50),
+    font_1 NVARCHAR(50), 
+    font_2 NVARCHAR(50),
+    textBox_color NVARCHAR(50),
+    button_color NVARCHAR(50),
+    created_at DATETIME
+);
+
+
+GO
+
+-- Tạo bảng trung gian UserCustomizations
+CREATE TABLE UserCustomizations (
+    userCustomization_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
     user_id NVARCHAR(36),
-    theme NVARCHAR(50), -- No default value
-    parrot_hat NVARCHAR(50),
-    created_at DATETIME,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    customization_id INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (customization_id) REFERENCES Customizations(customization_id)
 );
 GO
 
@@ -156,6 +169,26 @@ CREATE TABLE RefreshTokens (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 GO
+
+
+
+INSERT INTO Customizations (
+    ui_color,
+    font_color,
+    font_1,
+    font_2,
+    textBox_color,
+    button_color,
+    created_at
+) VALUES (
+    '0xFFFFE29A', -- ui_color
+    'green', -- font_color
+    'Arista', -- font_1
+    'KeepCalm', -- font_2
+    '0xFFFFA965', -- textBox_color
+    '0xFFFFA965', -- button_color
+    GETDATE() -- created_at sử dụng thời gian hiện tại
+);
 
 
   -- Tạo 10 gói đăng ký với subscription_id khác nhau
