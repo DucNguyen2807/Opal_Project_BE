@@ -5,7 +5,7 @@ namespace Opal_Exe201.Data.Models;
 
 public partial class Payment
 {
-    public string PaymentId { get; set; } = null!;
+    public int PaymentId { get; set; }
 
     public string? UserId { get; set; }
 

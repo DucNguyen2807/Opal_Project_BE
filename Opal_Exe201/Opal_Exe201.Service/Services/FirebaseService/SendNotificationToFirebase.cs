@@ -22,8 +22,9 @@ namespace Opal_Exe201.Service.Services.FirebaseService
 
             public async System.Threading.Tasks.Task CheckAndSendNotificationsAsync()
             {
-                var notifications = await _unitOfWork.NotificationRepository.GetAsync(
-                    n => n.IsSent == false && n.NotificationTime <= DateTime.Now);
+                var notis = await _unitOfWork.NotificationRepository.GetAsync();
+
+                var notifications = notis.Where(x => x.IsSent == false && x.NotificationTime <= DateTime.Now).ToList();
 
                 foreach (var notification in notifications)
                 {
