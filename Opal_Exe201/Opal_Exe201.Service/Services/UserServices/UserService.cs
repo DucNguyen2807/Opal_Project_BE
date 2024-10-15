@@ -130,6 +130,15 @@ namespace Opal_Exe201.Service.Services.UserServices
 
             await _unitOfWork.SeedRepository.InsertAsync(newSeed);
 
+
+            UserCustomization userCustomization = new UserCustomization
+            {
+                UserCustomizationId = Guid.NewGuid().ToString(),
+                CustomizationId = 1,
+                UserId = newUser.UserId,
+            };
+            await _unitOfWork.UserCustomizeRepository.InsertAsync(userCustomization);
+
             _unitOfWork.Save();   
         }
 

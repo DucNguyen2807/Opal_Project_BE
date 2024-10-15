@@ -8,6 +8,7 @@ using Opal_Exe201.Data.Repositories.RefreshTokenRepositories;
 using Opal_Exe201.Data.Repositories.SeedRepositories;
 using Opal_Exe201.Data.Repositories.SubscriptionRepositories;
 using Opal_Exe201.Data.Repositories.TasksRepositories;
+using Opal_Exe201.Data.Repositories.UserCustomizeRepositories;
 using Opal_Exe201.Data.Repositories.UserRepositories;
 using Opal_Exe201.Data.Repositories.UserSubRepositories;
 namespace Opal_Exe201.Data.UnitOfWorks
@@ -25,6 +26,8 @@ namespace Opal_Exe201.Data.UnitOfWorks
         IUserRepository UsersRepository { get; }
         IUserSubRepository UserSubRepository { get; }
         IOTPCodeRepository OTPCodeRepository { get; }
+        IUserCustomizeRepository UserCustomizeRepository { get; }
+
         Task<IDbContextTransaction> BeginTransactionAsync();
 
         Task SaveAsync();
