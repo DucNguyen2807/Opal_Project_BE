@@ -14,7 +14,7 @@ CREATE TABLE Users (
 	gender NVARCHAR(100),
     phone_number VARCHAR(20),
     subscription_plan NVARCHAR(50), -- No default value
-	Devicetoken Nvarchar(100),
+	Devicetoken Nvarchar(MAX),
     role NVARCHAR(50), -- New role column
     created_at DATETIME,
     updated_at DATETIME
@@ -145,7 +145,7 @@ GO
 
 -- Payment
 CREATE TABLE Payments (
-    payment_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
+    payment_id INT IDENTITY(1,1) PRIMARY KEY,
     user_id NVARCHAR(36),
     subscription_id NVARCHAR(36), 
     transaction_id NVARCHAR(100) UNIQUE NOT NULL,

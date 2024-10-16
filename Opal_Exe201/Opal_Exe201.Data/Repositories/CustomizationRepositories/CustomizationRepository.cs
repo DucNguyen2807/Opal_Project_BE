@@ -7,5 +7,7 @@ namespace Opal_Exe201.Data.Repositories.CustomizationRepositories
         public CustomizationRepository(OpalExeContext context) : base(context)
         {
         }
+
+
     }
 }

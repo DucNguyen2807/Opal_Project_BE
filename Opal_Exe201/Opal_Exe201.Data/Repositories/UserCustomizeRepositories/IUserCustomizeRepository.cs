@@ -10,5 +10,6 @@ namespace Opal_Exe201.Data.Repositories.UserCustomizeRepositories
 {
     public interface IUserCustomizeRepository : IGenericRepository<UserCustomization>
     {
+        Task<UserCustomization> GetAllDetail(string userId);
     }
 }

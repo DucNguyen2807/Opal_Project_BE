@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Opal_Exe201.Controllers.Extensions;
 using Opal_Exe201.Data.Mapper;
+using Opal_Exe201.Service.Services.CustomizeServices;
 using Opal_Exe201.Service.Services.EmailServices;
 using Opal_Exe201.Service.Services.EventServices;
 using Opal_Exe201.Service.Services.NotificationServices;
@@ -46,6 +47,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IPayOSService, PayOSService>();
+builder.Services.AddScoped<ICustomizeService, CustomizeService>();  
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
