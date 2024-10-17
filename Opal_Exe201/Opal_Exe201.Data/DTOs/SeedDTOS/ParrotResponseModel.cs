@@ -11,5 +11,6 @@ namespace Opal_Exe201.Data.DTOs.SeedDTOS
         public int ParrotLevel { get; set; }
         public int SeedCount { get; set; }
         public double PercentGrowth { get; set; }
+        public DateTime LastFedDate { get; set; }
     }
 }

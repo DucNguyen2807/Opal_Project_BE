@@ -8,9 +8,12 @@ namespace Opal_Exe201.Data.DTOs.SeedDTOS
 {
     public class FeedingResponseModel
     {
+        public string SeedId { get; set; }
+        public int ParrotLevel { get; set; }
         public int SeedCount { get; set; }
         public double PercentGrowth { get; set; }
-        public int ParrotLevel { get; set; }
+        public DateTime LastFedDate { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string Message { get; set; }
     }
 }

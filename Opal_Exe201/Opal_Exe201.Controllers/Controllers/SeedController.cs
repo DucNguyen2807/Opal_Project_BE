@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Opal_Exe201.Controllers.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class FeedController : ControllerBase
+    [ApiController]
+    public class SeedController : ControllerBase
     {
         private readonly ISeedService _seedService;
 
-        public FeedController(ISeedService seedService)
+        public SeedController(ISeedService seedService)
         {
             _seedService = seedService;
         }
@@ -22,8 +22,7 @@ namespace Opal_Exe201.Controllers.Controllers
         /// Lấy thông tin Parrot hiện tại của người dùng.
         /// </summary>
         /// <returns>Thông tin Parrot</returns>
-        [HttpGet]
-        [Route("view-parrot")]
+        [HttpGet("view-parrot")]
         public async Task<IActionResult> ViewParrot()
         {
             try
@@ -47,12 +46,11 @@ namespace Opal_Exe201.Controllers.Controllers
         }
 
         /// <summary>
-        /// Feed the parrot to increase seed count and potentially level up.
+        /// Feed Parrot
         /// </summary>
-        /// <param name="feedRequest">Details of the feed action.</param>
-        /// <returns>Updated seed information.</returns>
-        [HttpPost]
-        [Route("feed-parrot")]
+        /// <param name="feedRequest"></param>
+        /// <returns></returns>
+        [HttpPost("feed-parrot")]
         public async Task<IActionResult> FeedParrot([FromBody] FeedingRequestModel feedRequest)
         {
             if (!ModelState.IsValid)
@@ -60,20 +58,23 @@ namespace Opal_Exe201.Controllers.Controllers
                 return BadRequest(ModelState);
             }
 
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
             try
             {
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
                 var response = await _seedService.FeedParrotAsync(feedRequest, token);
                 return Ok(response);
             }
-            catch (ArgumentException ex)
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
-            catch
+            catch (ArgumentException ex)
             {
-                return StatusCode(500, new { message = "An error occurred while feeding the parrot." });
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }
     }
