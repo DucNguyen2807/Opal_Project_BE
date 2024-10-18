@@ -45,6 +45,7 @@ builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<IDeviceTokenService, DeviceTokenService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
+builder.Services.AddHostedService<ParrotMaintenanceService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IPayOSService, PayOSService>();
 builder.Services.AddScoped<ICustomizeService, CustomizeService>();  

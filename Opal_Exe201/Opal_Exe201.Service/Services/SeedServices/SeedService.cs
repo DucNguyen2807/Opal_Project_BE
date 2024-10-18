@@ -71,6 +71,11 @@ namespace Opal_Exe201.Service.Services.SeedServices
                     throw new InvalidOperationException("No seed record found. Please acquire seeds before feeding.");
                 }
 
+                if (seed.PercentGrowth == null || seed.SeedCount == null)
+                {
+                    throw new InvalidOperationException("Seed data is incomplete.");
+                }
+
                 var (requiredSeeds, growthIncrement) = GetFeedingParameters(seed.ParrotLevel);
 
                 if (feedRequest.FeedAmount < requiredSeeds)
@@ -78,7 +83,7 @@ namespace Opal_Exe201.Service.Services.SeedServices
                     throw new InvalidOperationException($"Insufficient feed amount for Parrot Level {seed.ParrotLevel}. You need at least {requiredSeeds} seeds to feed.");
                 }
 
-                if (seed.SeedCount < feedRequest.FeedAmount)
+                if ((seed.SeedCount ?? 0) < feedRequest.FeedAmount)
                 {
                     throw new InvalidOperationException("Insufficient seeds to perform the feeding action.");
                 }
@@ -90,20 +95,22 @@ namespace Opal_Exe201.Service.Services.SeedServices
                     throw new InvalidOperationException("Feed amount is too low to provide any growth.");
                 }
 
-                seed.SeedCount -= (increments * requiredSeeds);
-                seed.PercentGrowth += (increments * growthIncrement);
+                seed.SeedCount = (seed.SeedCount ?? 0) - (increments * requiredSeeds);
+                seed.PercentGrowth = (seed.PercentGrowth ?? 0.0) + (increments * growthIncrement);
 
-                while (seed.PercentGrowth >= 100 && seed.ParrotLevel < 4)
+                while (seed.PercentGrowth >= 100 && seed.ParrotLevel < 5)
                 {
                     seed.PercentGrowth -= 100;
                     seed.ParrotLevel += 1;
                 }
 
-                if (seed.ParrotLevel >= 4 && seed.PercentGrowth > 100)
+                if (seed.ParrotLevel >= 5 && seed.PercentGrowth > 100)
                 {
-                    seed.ParrotLevel = 4;
+                    seed.ParrotLevel = 5;
                     seed.PercentGrowth = 100;
                 }
+
+                seed.LastFedDate = DateTime.Now;
 
                 _unitOfWork.SeedRepository.Update(seed);
 
@@ -129,10 +136,10 @@ namespace Opal_Exe201.Service.Services.SeedServices
         {
             return parrotLevel switch
             {
-                1 => (1, 2.0),
-                2 => (1, 1.0),
-                3 => (1, 0.5),
-                4 => (1, 0.25),
+                1 => (1, 33.33),
+                2 => (1, 2.0),
+                3 => (1, 1.33),
+                4 => (1, 1.0),
                 _ => throw new InvalidOperationException("Invalid Parrot Level.")
             };
         }

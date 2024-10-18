@@ -17,5 +17,7 @@ public partial class Seed
 
     public DateTime? CreatedAt { get; set; }
 
+    public DateTime? LastFedDate { get; set; }
+
     public virtual User? User { get; set; }
 }
