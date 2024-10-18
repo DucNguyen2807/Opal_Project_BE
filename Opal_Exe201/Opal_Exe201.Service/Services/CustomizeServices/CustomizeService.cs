@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Opal_Exe201.Data.DTOs.CustomizeDTOs;
 using Opal_Exe201.Data.DTOs.TaskDTOs;
+using Opal_Exe201.Data.Enums.UserEnums;
 using Opal_Exe201.Data.Models;
 using Opal_Exe201.Data.UnitOfWorks;
 using Opal_Exe201.Service.Utils;
@@ -30,6 +31,7 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
 
             var customizeResponse = new CustomizeReponseModel
             {
+                CustomizationId = customize.CustomizationId,
                 UiColor = customize.Customization.UiColor,
                 FontColor = customize.Customization.FontColor,
                 Font1 = customize.Customization.Font1,
@@ -64,9 +66,13 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
         public async Task<bool> UpdateUserCustomizationAsync(int customizeId, string token)
         {
             var userId = JWTGenerate.DecodeToken(token, "UserId");
-
+            var user = await _unitOfWork.UsersRepository.GetByIDAsync(userId);
             var userCustomization = await _unitOfWork.UserCustomizeRepository.GetAllDetail(userId);
 
+            if (user.SubscriptionPlan.Equals(nameof(SubscriptionEnum.Free)))
+            {
+                throw new Exception("User don't have premium for choose this customize");
+            }
 
             if (userCustomization == null)
             {
@@ -81,12 +87,5 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
 
             return true;
         }
-
-
-
-
-
-
-
     }
 }
