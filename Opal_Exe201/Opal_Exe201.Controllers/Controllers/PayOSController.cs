@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Net.payOS;
 using Net.payOS.Types;
 using Opal_Exe201.Data.DTOs.PaymentService;
@@ -18,43 +19,28 @@ namespace Opal_Exe201.Controllers.Controllers
     {
         private readonly IConfiguration _config;
         private readonly ILogger<PayOSController> _logger;
-
-        public PayOSController(IConfiguration config, ILogger<PayOSController> logger)
-        {
-            _config = config;
-            _logger = logger;
         private readonly ISubscriptionService _subscriptionService;
 
-        public PayOSController(IConfiguration config, ISubscriptionService subscriptionService)
+        public PayOSController(IConfiguration config, ISubscriptionService subscriptionService, ILogger<PayOSController> logger)
         {
             _config = config;
             _subscriptionService = subscriptionService;
+            _logger = logger;
         }
 
-
-        [HttpGet]
+        [HttpGet("{orderCode}")]
         public async Task<IActionResult> GetPaymentLinkInformation(int orderCode)
         {
             _logger.LogInformation("Fetching payment link information for order code: {OrderCode}", orderCode);
 
             try
-            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
-
-            bool isUpdated = await _subscriptionService.UpdatePaymentAndSubscription(orderCode, paymentLinkInformation.status);
-
-            ResultModel response = new ResultModel
             {
-                // Ghi log các thông tin cấu hình
-                _logger.LogInformation("Using PayOS ClientID: {ClientId}, ApiKey: {ApiKey}, ChecksumKey: {ChecksumKey}",
-                    _config["PayOS:ClientID"],
-                    _config["PayOS:ApiKey"],
-                    _config["PayOS:ChecksumKey"]);
-
                 PayOS payOS = new PayOS(_config["PayOS:ClientID"], _config["PayOS:ApiKey"], _config["PayOS:ChecksumKey"]);
 
-                // Gọi API để lấy thông tin liên kết thanh toán
                 PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
-                // Giả định paymentLinkInformation là một đối tượng của PaymentLinkInformation
+
+                bool isUpdated = await _subscriptionService.UpdatePaymentAndSubscription(orderCode, paymentLinkInformation.status);
+
                 _logger.LogInformation("Payment Link ID: {id}", paymentLinkInformation.id);
                 _logger.LogInformation("Order Code: {orderCode}", paymentLinkInformation.orderCode);
                 _logger.LogInformation("Total Amount: {amount}", paymentLinkInformation.amount);
@@ -64,7 +50,6 @@ namespace Opal_Exe201.Controllers.Controllers
                 _logger.LogInformation("Created At: {createdAt}", paymentLinkInformation.createdAt);
                 _logger.LogInformation("Canceled At: {canceledAt}", paymentLinkInformation.canceledAt);
                 _logger.LogInformation("Cancellation Reason: {cancellationReason}", paymentLinkInformation.cancellationReason);
-
 
                 ResultModel response = new ResultModel
                 {
@@ -91,10 +76,6 @@ namespace Opal_Exe201.Controllers.Controllers
                 return StatusCode(response.Code, response);
             }
         }
-
-
-
-
 
         //[HttpPost("webhook")]
         //public async Task<IActionResult> HandlePaymentWebhook([FromBody] WebhookType webhookBody)
