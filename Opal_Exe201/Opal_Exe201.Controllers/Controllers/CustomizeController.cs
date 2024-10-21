@@ -15,11 +15,10 @@ namespace Opal_Exe201.Controllers.Controllers
         
         }
         [HttpGet]
-        [Route("get-customize-by-user")]
-        public async Task<IActionResult> GetCustomizeByUser()
+        [Route("get-customize-by-user/{userId}")]
+        public async Task<IActionResult> GetCustomizeByUser(string userId)
         {
-            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var customize = await _customize.GetCustomizeByUserAsync(token);
+            var customize = await _customize.GetCustomizeByUserAsync(userId);
             return Ok(customize);
         }
         [HttpGet]

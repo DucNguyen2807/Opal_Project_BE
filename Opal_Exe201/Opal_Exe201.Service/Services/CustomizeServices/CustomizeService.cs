@@ -23,9 +23,9 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<CustomizeReponseModel> GetCustomizeByUserAsync(string token)
+        public async Task<CustomizeReponseModel> GetCustomizeByUserAsync(string userId)
         {
-            var userId = JWTGenerate.DecodeToken(token, "UserId");
+            
 
             var customize = await _unitOfWork.UserCustomizeRepository.GetAllDetail(userId);
 

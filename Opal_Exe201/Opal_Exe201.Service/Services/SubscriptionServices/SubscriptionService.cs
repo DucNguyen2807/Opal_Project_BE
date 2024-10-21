@@ -64,7 +64,7 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
                 throw new Exception("Subscription not found.");
             }
 
-            subscription.Status = subscription.Status == "Active" ? "Inactive" : "Active";
+            subscription.Status = subscription.Status == "Active" ? "Not Active" : "Active";
 
              _unitOfWork.SubscriptionRepository.UpdateAsync(subscriptionId, subscription);
             await _unitOfWork.SaveAsync(); 
