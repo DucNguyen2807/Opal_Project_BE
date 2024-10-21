@@ -9,7 +9,7 @@ public partial class UserCustomization
 
     public string? UserId { get; set; }
 
-    public int? CustomizationId { get; set; }
+    public int CustomizationId { get; set; }
 
     public virtual Customization? Customization { get; set; }
 

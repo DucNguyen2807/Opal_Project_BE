@@ -68,15 +68,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// CORS
+// CORS configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowAll", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy
-        .AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
+
 
 // Swagger
 builder.Services.AddSwaggerGen(options =>

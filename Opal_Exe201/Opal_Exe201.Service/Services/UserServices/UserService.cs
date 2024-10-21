@@ -42,6 +42,7 @@ namespace Opal_Exe201.Service.Services.UserServices
                     Email = user.Email,
                     FullName = user.Fullname,
                     Gender = user.Gender,
+                    Role = user.Role,
                     PhoneNumber = user.PhoneNumber,
                     SubscriptionPlan = user.SubscriptionPlan,
                     Username = user.Username,

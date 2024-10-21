@@ -9,7 +9,7 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
 {
     public interface ICustomizeService
     {
-        Task<CustomizeReponseModel> GetCustomizeByUserAsync(string token);
+        Task<CustomizeReponseModel> GetCustomizeByUserAsync(string userId);
         Task<List<CustomizeReponseModel>> GetCustomizeAsync();
         Task<bool> UpdateUserCustomizationAsync(int customizeId, string token);
     }
