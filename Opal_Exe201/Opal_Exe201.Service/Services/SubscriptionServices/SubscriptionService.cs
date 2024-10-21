@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Opal_Exe201.Data.DTOs.PaymentService;
 using Opal_Exe201.Data.DTOs.SubscriptionsDTOs;
 using Opal_Exe201.Data.Enums.SubscriptionEnums;
@@ -123,17 +124,67 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
             if (payment.Status == "Success")
                 throw new Exception("Payment has already been paid.");
 
+            var subscription = await _unitOfWork.SubscriptionRepository.GetByIDAsync(payment.SubscriptionId);
+            if (subscription == null)
+                throw new Exception("Subscription does not exist.");
+
             var payOSReqModel = new PayOSReqModel
             {
                 OrderId = payment.PaymentId,
                 Amount = payment.Amount,
-                SubName = "Subscription Payment",
+                SubName = subscription.SubName,
                 RedirectUrl = redirectUrl,
                 CancleUrl = redirectUrl,
             };
 
             var paymentResult = await _payOSService.CreatePaymentUrl(payOSReqModel);
             return paymentResult.checkoutUrl;
+        }
+
+
+        public async Task<bool> UpdatePaymentAndSubscription(int orderCode, string status)
+        {
+            var payments = await _unitOfWork.PaymentRepository.GetAsync(p => p.PaymentId == orderCode);
+            var payment = payments.FirstOrDefault();
+
+            if (payment != null)
+            {
+                payment.Status = status;
+                payment.PaymentDate = DateTime.Now;
+                _unitOfWork.PaymentRepository.Update(payment);
+
+                if (status == "PAID")
+                {
+                    var user = await _unitOfWork.UsersRepository.GetByIDAsync(payment.UserId);
+                    if (user != null)
+                    {
+                        var subscription = await _unitOfWork.SubscriptionRepository.GetByIDAsync(payment.SubscriptionId);
+
+                        if (subscription != null)
+                        {
+                            user.SubscriptionPlan = "Premium";
+                            _unitOfWork.UsersRepository.Update(user);
+
+                            var userSubscription = new UserSub
+                            {
+                                UserSubId = Guid.NewGuid().ToString(),
+                                UserId = user.UserId,
+                                SubscriptionId = subscription.SubscriptionId,
+                                StartDate = DateOnly.FromDateTime(DateTime.Now),
+                                EndDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(subscription.Duration)),
+                                Status = "ACTIVE",
+                                CreatedAt = DateTime.Now
+                            };
+
+                            await _unitOfWork.UserSubRepository.InsertAsync(userSubscription);
+                        }
+                    }
+                }
+
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

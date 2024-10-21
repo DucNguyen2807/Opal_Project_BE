@@ -17,5 +17,6 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
         System.Threading.Tasks.Task UpdateCoinPack(SubscriptionUpdateRequestModel requestModel, string id);
         Task<int> CreateCustomerSubscriptionTransaction(string token, string subscriptionId);
         Task<string> GetPaymentUrl(int paymentId, string redirectUrl);
+        Task<bool> UpdatePaymentAndSubscription(int orderCode, string status);
     }
 }
