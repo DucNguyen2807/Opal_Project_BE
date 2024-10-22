@@ -133,6 +133,65 @@ CREATE TABLE Customizations (
 
 GO
 
+CREATE TABLE Theme (
+    theme_id INT IDENTITY(1,1) PRIMARY KEY, -- Tự động tăng
+	background_bird NVARCHAR(50),
+	background_home NVARCHAR(50),
+    bird NVARCHAR(50),
+	bird1 NVARCHAR(50), 
+    icon1 NVARCHAR(50),
+    icon2 NVARCHAR(50),
+    icon3 NVARCHAR(50),
+    icon4 NVARCHAR(50),
+	icon5 NVARCHAR(50),
+    icon6 NVARCHAR(50),
+    icon7 NVARCHAR(50),
+    icon8 NVARCHAR(50),
+    icon9 NVARCHAR(50),
+    icon10 NVARCHAR(50),
+    icon13 NVARCHAR(50),
+    icon14 NVARCHAR(50),
+	icon15 NVARCHAR(50),
+	login_opal NVARCHAR(50),
+	logo NVARCHAR(50),
+);
+INSERT INTO Theme (
+    background_bird, background_home, bird, bird1, 
+    icon1, icon2, icon3, icon4, icon5, 
+    icon6, icon7, icon8, icon9, icon10, 
+    icon13, icon14, icon15, login_opal, logo
+) VALUES 
+('assets/background.png', null, 'assets/bird.png', 'assets/bird1.png', 
+ 'assets/icon opal-01.png',null, null, null, 'assets/icon opal-05.png', 
+ null, 'assets/icon opal-07.png', 'assets/icon opal-08.png', 
+ 'assets/icon opal-09.png', null, 
+null, null, null, 'assets/login-opal.png', 'assets/logo.png');
+
+  INSERT INTO Theme (
+    background_bird, background_home, bird, bird1, 
+    icon1, icon2, icon3, icon4, icon5, 
+    icon6, icon7, icon8, icon9, icon10, 
+    icon13, icon14, icon15, login_opal, logo
+) VALUES 
+('assets/Theme Christmas Opal-12.png', 'assets/Theme Christmas Opal-11.png',
+'assets/Theme Christmas Opal-01.png'
+, 'assets/Theme Christmas Opal-01.5.png', 
+ 'assets/icon1.png', 'assets/Theme Christmas Opal-02.png', 'assets/Theme Christmas Opal-03.png', 
+ 'assets/Theme Christmas Opal-04.png', 'assets/Theme Christmas Opal-05.png', 
+ 'assets/Theme Christmas Opal-06.png', 'assets/Theme Christmas Opal-07.png', 
+ 'assets/Theme Christmas Opal-08.png', 'assets/Theme Christmas Opal-09.png'
+ , 'assets/Theme Christmas Opal-10.png', 
+ 'assets/Theme Christmas Opal-13.png', 'assets/Theme Christmas Opal-14.png',
+ 'assets/Theme Christmas Opal-15.png',
+ 'assets/Theme Christmas Opal-15.png', 'assets/Theme Christmas Opal-15.png');
+
+GO
+
+
+INSERT INTO UserTheme (userTheme_id, user_id, theme_id) 
+VALUES (NEWID(), '35a8f69a-db8a-4eea-aaca-2dcd046e2843', 1);
+
+
 -- Tạo bảng trung gian UserCustomizations
 CREATE TABLE UserCustomizations (
     userCustomization_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
@@ -143,6 +202,15 @@ CREATE TABLE UserCustomizations (
 );
 GO
 
+-- Tạo bảng trung gian UserCustomizations
+CREATE TABLE UserTheme (
+    userTheme_id NVARCHAR(36) PRIMARY KEY DEFAULT NEWID(),
+    user_id NVARCHAR(36),
+    theme_id INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (theme_id) REFERENCES Theme(theme_id)
+);
+GO
 -- Payment
 CREATE TABLE Payments (
     payment_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -194,7 +262,7 @@ INSERT INTO Customizations (
   -- Tạo 10 gói đăng ký với subscription_id khác nhau
 INSERT INTO Subscriptions (subscription_id, SubName, Duration, Price, SubDescription, status)
 VALUES 
-(NEWID(), 'Basic Plan', 1, 500000, '1-month basic subscription', 'Active '),
+(NEWID(), 'Basic Plan', 1, 2000, '1-month basic subscription', 'Active '),
 (NEWID(), 'Standard Plan', 3, 12000, '3-month standard subscription', 'Active '),
 (NEWID(), 'Premium Plan', 6, 19000, '6-month premium subscription', 'Active '),
 (NEWID(), 'Enterprise Plan', 12, 39000, '12-month enterprise subscription', 'Active '),

@@ -14,6 +14,7 @@ using Opal_Exe201.Service.Services.PaymentServices;
 using Opal_Exe201.Service.Services.SeedServices;
 using Opal_Exe201.Service.Services.SubscriptionServices;
 using Opal_Exe201.Service.Services.TaskServices;
+using Opal_Exe201.Service.Services.ThemeServices;
 using Opal_Exe201.Service.Services.UserServices;
 using System.Text;
 using static Opal_Exe201.Service.Services.FirebaseService.SendNotificationToFirebase;
@@ -48,8 +49,8 @@ builder.Services.AddHostedService<NotificationBackgroundService>();
 builder.Services.AddHostedService<ParrotMaintenanceService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IPayOSService, PayOSService>();
-builder.Services.AddScoped<ICustomizeService, CustomizeService>();  
-
+builder.Services.AddScoped<ICustomizeService, CustomizeService>(); 
+builder.Services.AddScoped<IThemeService, ThemeService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 // Authentication

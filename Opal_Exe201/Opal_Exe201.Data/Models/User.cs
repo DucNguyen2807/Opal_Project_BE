@@ -46,4 +46,6 @@ public partial class User
     public virtual ICollection<UserCustomization> UserCustomizations { get; set; } = new List<UserCustomization>();
 
     public virtual ICollection<UserSub> UserSubs { get; set; } = new List<UserSub>();
+
+    public virtual ICollection<UserTheme> UserThemes { get; set; } = new List<UserTheme>();
 }

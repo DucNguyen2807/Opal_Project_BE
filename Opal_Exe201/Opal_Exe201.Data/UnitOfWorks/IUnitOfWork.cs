@@ -8,9 +8,11 @@ using Opal_Exe201.Data.Repositories.RefreshTokenRepositories;
 using Opal_Exe201.Data.Repositories.SeedRepositories;
 using Opal_Exe201.Data.Repositories.SubscriptionRepositories;
 using Opal_Exe201.Data.Repositories.TasksRepositories;
+using Opal_Exe201.Data.Repositories.ThemeRepositories;
 using Opal_Exe201.Data.Repositories.UserCustomizeRepositories;
 using Opal_Exe201.Data.Repositories.UserRepositories;
 using Opal_Exe201.Data.Repositories.UserSubRepositories;
+using Opal_Exe201.Data.Repositories.UserThemeRepositories;
 namespace Opal_Exe201.Data.UnitOfWorks
 {
     public interface IUnitOfWork : IDisposable
@@ -27,6 +29,8 @@ namespace Opal_Exe201.Data.UnitOfWorks
         IUserSubRepository UserSubRepository { get; }
         IOTPCodeRepository OTPCodeRepository { get; }
         IUserCustomizeRepository UserCustomizeRepository { get; }
+        IThemeRepository ThemeRepository { get; }
+        IUserThemeRepository UserThemeRepository { get; }
 
         Task<IDbContextTransaction> BeginTransactionAsync();
 
