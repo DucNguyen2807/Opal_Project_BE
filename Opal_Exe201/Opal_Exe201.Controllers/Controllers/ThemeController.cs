@@ -33,12 +33,12 @@ namespace Opal_Exe201.Controllers.Controllers
 
         [HttpPut]
         [Route("update-theme-by-me/{themeId}")]
-        public async Task<IActionResult> UpdateUserCustomize(int customizeId)
+        public async Task<IActionResult> UpdateUserCustomize(int themeId)
         {
             try
             {
                 string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
-                bool result = await _theme.UpdateUserThemeAsync(customizeId, token);
+                bool result = await _theme.UpdateUserThemeAsync(themeId, token);
                 if (!result)
                 {
                     return NotFound("Theme not found or user does not have permission.");
