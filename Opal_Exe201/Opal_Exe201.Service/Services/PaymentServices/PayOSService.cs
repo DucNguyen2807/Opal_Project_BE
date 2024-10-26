@@ -29,7 +29,7 @@ public class PayOSService : IPayOSService
         PaymentData paymentData = new PaymentData(
             payOSReqModel.OrderId,
             (int)payOSReqModel.Amount,
-            "Subscription Payment", 
+            payOSReqModel.SubName, 
             items, 
             payOSReqModel.CancleUrl, 
             payOSReqModel.RedirectUrl

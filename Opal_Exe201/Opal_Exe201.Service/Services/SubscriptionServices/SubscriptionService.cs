@@ -165,18 +165,30 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
                             user.SubscriptionPlan = "Premium";
                             _unitOfWork.UsersRepository.Update(user);
 
-                            var userSubscription = new UserSub
-                            {
-                                UserSubId = Guid.NewGuid().ToString(),
-                                UserId = user.UserId,
-                                SubscriptionId = subscription.SubscriptionId,
-                                StartDate = DateOnly.FromDateTime(DateTime.Now),
-                                EndDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(subscription.Duration)),
-                                Status = "ACTIVE",
-                                CreatedAt = DateTime.Now
-                            };
+                            var existingUserSub = await _unitOfWork.UserSubRepository.GetAsync(
+                                us => us.UserId == user.UserId && us.SubscriptionId == subscription.SubscriptionId && us.Status == "ACTIVE");
 
-                            await _unitOfWork.UserSubRepository.InsertAsync(userSubscription);
+                            if (existingUserSub.Any())
+                            {
+                                var userSubscription = existingUserSub.First();
+                                userSubscription.EndDate = DateOnly.FromDateTime(userSubscription.EndDate.ToDateTime(TimeOnly.MinValue).AddMonths(subscription.Duration));
+                                _unitOfWork.UserSubRepository.Update(userSubscription);
+                            }
+                            else
+                            {
+                                var newUserSubscription = new UserSub
+                                {
+                                    UserSubId = Guid.NewGuid().ToString(),
+                                    UserId = user.UserId,
+                                    SubscriptionId = subscription.SubscriptionId,
+                                    StartDate = DateOnly.FromDateTime(DateTime.Now),
+                                    EndDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(subscription.Duration)),
+                                    Status = "ACTIVE",
+                                    CreatedAt = DateTime.Now
+                                };
+
+                                await _unitOfWork.UserSubRepository.InsertAsync(newUserSubscription);
+                            }
                         }
                     }
                 }
@@ -184,6 +196,7 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
                 await _unitOfWork.SaveAsync();
                 return true;
             }
+
             return false;
         }
     }
