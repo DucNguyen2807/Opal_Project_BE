@@ -71,6 +71,7 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
             var userId = JWTGenerate.DecodeToken(token, "UserId");
             var user = await _unitOfWork.UsersRepository.GetByIDAsync(userId);
             var userCustomization = await _unitOfWork.UserCustomizeRepository.GetAllDetail(userId);
+            var userTheme = await _unitOfWork.UserThemeRepository.GetAllDetail(userId);
 
             if (user.SubscriptionPlan.Equals(nameof(SubscriptionEnum.Free)))
             {
@@ -81,9 +82,16 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
             {
                 throw new Exception("User customization not found.");
             }
-
+            
             userCustomization.CustomizationId = customizeId;
-
+            if (customizeId == 4)
+            {
+                userTheme.ThemeId = 2;
+            }
+            else
+            {
+                userTheme.ThemeId = 1;
+            }
             _unitOfWork.UserCustomizeRepository.Update(userCustomization);
 
             _unitOfWork.Save(); 
