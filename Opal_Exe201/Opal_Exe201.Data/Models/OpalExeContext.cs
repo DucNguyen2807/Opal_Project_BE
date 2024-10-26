@@ -10,7 +10,6 @@ public partial class OpalExeContext : DbContext
     public OpalExeContext()
     {
     }
-
     public OpalExeContext(DbContextOptions<OpalExeContext> options)
         : base(options)
     {
@@ -34,11 +33,15 @@ public partial class OpalExeContext : DbContext
 
     public virtual DbSet<Task> Tasks { get; set; }
 
+    public virtual DbSet<Theme> Themes { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserCustomization> UserCustomizations { get; set; }
 
     public virtual DbSet<UserSub> UserSubs { get; set; }
+
+    public virtual DbSet<UserTheme> UserThemes { get; set; }
 
     private string GetConnectionString()
     {
@@ -259,6 +262,7 @@ public partial class OpalExeContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+            entity.Property(e => e.LastFedDate).HasColumnType("datetime");
             entity.Property(e => e.ParrotLevel).HasColumnName("parrot_level");
             entity.Property(e => e.PercentGrowth).HasColumnName("percent_growth");
             entity.Property(e => e.SeedCount).HasColumnName("seed_count");
@@ -322,6 +326,72 @@ public partial class OpalExeContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__Tasks__user_id__403A8C7D");
+        });
+
+        modelBuilder.Entity<Theme>(entity =>
+        {
+            entity.HasKey(e => e.ThemeId).HasName("PK__Theme__73CEC20AEDFD8369");
+
+            entity.ToTable("Theme");
+
+            entity.Property(e => e.ThemeId).HasColumnName("theme_id");
+            entity.Property(e => e.BackgroundBird)
+                .HasMaxLength(50)
+                .HasColumnName("background_bird");
+            entity.Property(e => e.BackgroundHome)
+                .HasMaxLength(50)
+                .HasColumnName("background_home");
+            entity.Property(e => e.Bird)
+                .HasMaxLength(50)
+                .HasColumnName("bird");
+            entity.Property(e => e.Bird1)
+                .HasMaxLength(50)
+                .HasColumnName("bird1");
+            entity.Property(e => e.Icon1)
+                .HasMaxLength(50)
+                .HasColumnName("icon1");
+            entity.Property(e => e.Icon10)
+                .HasMaxLength(50)
+                .HasColumnName("icon10");
+            entity.Property(e => e.Icon13)
+                .HasMaxLength(50)
+                .HasColumnName("icon13");
+            entity.Property(e => e.Icon14)
+                .HasMaxLength(50)
+                .HasColumnName("icon14");
+            entity.Property(e => e.Icon15)
+                .HasMaxLength(50)
+                .HasColumnName("icon15");
+            entity.Property(e => e.Icon2)
+                .HasMaxLength(50)
+                .HasColumnName("icon2");
+            entity.Property(e => e.Icon3)
+                .HasMaxLength(50)
+                .HasColumnName("icon3");
+            entity.Property(e => e.Icon4)
+                .HasMaxLength(50)
+                .HasColumnName("icon4");
+            entity.Property(e => e.Icon5)
+                .HasMaxLength(50)
+                .HasColumnName("icon5");
+            entity.Property(e => e.Icon6)
+                .HasMaxLength(50)
+                .HasColumnName("icon6");
+            entity.Property(e => e.Icon7)
+                .HasMaxLength(50)
+                .HasColumnName("icon7");
+            entity.Property(e => e.Icon8)
+                .HasMaxLength(50)
+                .HasColumnName("icon8");
+            entity.Property(e => e.Icon9)
+                .HasMaxLength(50)
+                .HasColumnName("icon9");
+            entity.Property(e => e.LoginOpal)
+                .HasMaxLength(50)
+                .HasColumnName("login_opal");
+            entity.Property(e => e.Logo)
+                .HasMaxLength(50)
+                .HasColumnName("logo");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -424,6 +494,30 @@ public partial class OpalExeContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserSubs)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__UserSub__user_id__4E88ABD4");
+        });
+
+        modelBuilder.Entity<UserTheme>(entity =>
+        {
+            entity.HasKey(e => e.UserThemeId).HasName("PK__UserThem__59C2DD2E79D4F951");
+
+            entity.ToTable("UserTheme");
+
+            entity.Property(e => e.UserThemeId)
+                .HasMaxLength(36)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("userTheme_id");
+            entity.Property(e => e.ThemeId).HasColumnName("theme_id");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(36)
+                .HasColumnName("user_id");
+
+            entity.HasOne(d => d.Theme).WithMany(p => p.UserThemes)
+                .HasForeignKey(d => d.ThemeId)
+                .HasConstraintName("FK__UserTheme__theme__75A278F5");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserThemes)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__UserTheme__user___74AE54BC");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -9,9 +9,11 @@ using Opal_Exe201.Data.Repositories.RefreshTokenRepositories;
 using Opal_Exe201.Data.Repositories.SeedRepositories;
 using Opal_Exe201.Data.Repositories.SubscriptionRepositories;
 using Opal_Exe201.Data.Repositories.TasksRepositories;
+using Opal_Exe201.Data.Repositories.ThemeRepositories;
 using Opal_Exe201.Data.Repositories.UserCustomizeRepositories;
 using Opal_Exe201.Data.Repositories.UserRepositories;
 using Opal_Exe201.Data.Repositories.UserSubRepositories;
+using Opal_Exe201.Data.Repositories.UserThemeRepositories;
 using System.ComponentModel.DataAnnotations;
 
 namespace Opal_Exe201.Data.UnitOfWorks
@@ -31,7 +33,8 @@ namespace Opal_Exe201.Data.UnitOfWorks
         private IUserSubRepository _userSubRepository;
         private IOTPCodeRepository _otpCodeRepository;
         private IUserCustomizeRepository _userCustomizeRepository;
-
+        private IThemeRepository _themeRepository;
+        private IUserThemeRepository _userThemeRepository;
 
         public UnitOfWork(OpalExeContext context)
         {
@@ -121,6 +124,22 @@ namespace Opal_Exe201.Data.UnitOfWorks
             get
             {
                 return _userCustomizeRepository ??= new UserCustomizeRepository(_context);
+            }
+        }
+
+        public IThemeRepository ThemeRepository
+        {
+            get
+            {
+                return _themeRepository ??= new ThemeRepository(_context);
+            }
+        }
+
+        public IUserThemeRepository UserThemeRepository
+        {
+            get
+            {
+                return _userThemeRepository ??= new UserThemeRepository(_context);
             }
         }
         public void Save()

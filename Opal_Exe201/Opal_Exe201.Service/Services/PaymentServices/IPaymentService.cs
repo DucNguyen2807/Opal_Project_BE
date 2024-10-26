@@ -10,6 +10,7 @@ namespace Opal_Exe201.Service.Services.PaymentServices
 {
     public interface IPaymentService
     {
-        Task<GetAllPaymentResponseModel> GetAllPayment(string searchQuery, int pageIndex, int pageSize);
+        Task<GetAllPaymentResponseModel> GetAllPayment();
+        Task<GetAllPaymentResponseModel> GetAllPaymentOrderDate(string searchQuery, int pageIndex, int pageSize);
     }
 }

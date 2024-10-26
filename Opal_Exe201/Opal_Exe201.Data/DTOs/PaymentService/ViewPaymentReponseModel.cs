@@ -13,7 +13,7 @@ namespace Opal_Exe201.Data.DTOs.PaymentService
     }
     public class ViewPaymentReponseModel
     {
-        public string PaymentId { get; set; } = null!;
+        public int PaymentId { get; set; }
 
         public string? UserId { get; set; }
 

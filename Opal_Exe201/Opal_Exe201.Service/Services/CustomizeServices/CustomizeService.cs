@@ -25,7 +25,10 @@ namespace Opal_Exe201.Service.Services.CustomizeServices
         }
         public async Task<CustomizeReponseModel> GetCustomizeByUserAsync(string userId)
         {
-            
+            if (userId == null)
+            {
+                throw new Exception("UserId not found.");
+            }
 
             var customize = await _unitOfWork.UserCustomizeRepository.GetAllDetail(userId);
 

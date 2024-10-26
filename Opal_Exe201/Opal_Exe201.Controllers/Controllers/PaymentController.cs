@@ -17,10 +17,18 @@ namespace Opal_Exe201.Controllers.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPayment(int pageIndex, int pageSize, string searchQuery = null)
+        public async Task<IActionResult> GetAllPayment()
         {
 
-            var payment = await _paymentService.GetAllPayment(searchQuery, pageIndex, pageSize);
+            var payment = await _paymentService.GetAllPayment();
+            return Ok(payment);
+        }
+        [HttpGet]
+        [Route("order-date")]
+        public async Task<IActionResult> GetAllPaymentByOrderDate(int pageIndex, int pageSize, string searchQuery = null)
+        {
+
+            var payment = await _paymentService.GetAllPaymentOrderDate(searchQuery, pageIndex, pageSize);
             return Ok(payment);
         }
     }
