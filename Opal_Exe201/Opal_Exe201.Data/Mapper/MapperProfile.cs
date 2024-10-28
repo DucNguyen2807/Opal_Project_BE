@@ -39,8 +39,11 @@ namespace Opal_Exe201.Data.Mapper
                          ? new TimeOnly(src.TimeTask.Value.Hour, src.TimeTask.Value.Minute)
                          : (TimeOnly?)null));
             CreateMap<Payment, ViewPaymentReponseModel>()
-            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
-            .ForMember(dest => dest.SubscriptionName, opt => opt.MapFrom(src => src.Subscription.SubName)); 
+                .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.SubscriptionName, opt => opt.MapFrom(src => src.Subscription.SubName))
+                .ForMember(dest => dest.PaymentDateFormatted,
+                           opt => opt.MapFrom(src => src.PaymentDate.HasValue ? src.PaymentDate.Value.ToString("yyyy-MM-dd") : string.Empty));
+
 
             //Subscriptions
             CreateMap<Subscription, ViewSubscriptionsReponseModel>().ReverseMap();

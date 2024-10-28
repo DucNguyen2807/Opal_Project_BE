@@ -178,7 +178,10 @@ namespace Opal_Exe201.Service.Services.UserServices
             Expression<Func<User, bool>> searchFilter = u => string.IsNullOrEmpty(searchQuery) ||
                                                                u.Email.Contains(searchQuery) ||
                                                                u.PhoneNumber.Contains(searchQuery) ||
-                                                               u.Role.Contains(searchQuery);
+                                                               u.Role.Contains(searchQuery)||
+                                                               u.Fullname.Contains(searchQuery)||
+                                                               u.SubscriptionPlan.Contains(searchQuery)
+                                                               ;
 
             var users = await _unitOfWork.UsersRepository.GetAsync(searchFilter, pageIndex: pageIndex, pageSize: pageSize);
 

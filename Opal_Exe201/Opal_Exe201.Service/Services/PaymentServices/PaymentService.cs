@@ -28,7 +28,7 @@ namespace Opal_Exe201.Service.Services.PaymentServices
         {
 
 
-            var payment = await _unitOfWork.PaymentRepository.GetAsync(includeProperties: "User,Subscription");
+            var payment = await _unitOfWork.PaymentRepository.GetAsync(includeProperties: "User,Subscription", orderBy: q => q.OrderBy(p => p.PaymentDate));
 
             var totalPayment = await _unitOfWork.PaymentRepository.CountAsync();
 
@@ -44,8 +44,9 @@ namespace Opal_Exe201.Service.Services.PaymentServices
         {
             Expression<Func<Payment, bool>> searchFilter = u => string.IsNullOrEmpty(searchQuery) ||
                                                                u.User.Email.Contains(searchQuery) ||
-                                                               u.PaymentMethod.Contains(searchQuery);
-            //||                                                   u.PaymentDate.Contains(searchQuery);
+                                                               u.PaymentMethod.Contains(searchQuery)||
+                                                               u.Status.Contains(searchQuery)
+                                                               ;
 
             var payment = await _unitOfWork.PaymentRepository.GetAsync(searchFilter, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "User,Subscription", orderBy: q => q.OrderByDescending(p => p.PaymentDate));
 
