@@ -171,7 +171,7 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
                             if (existingUserSub.Any())
                             {
                                 var userSubscription = existingUserSub.First();
-                                userSubscription.EndDate = DateOnly.FromDateTime(userSubscription.EndDate.ToDateTime(TimeOnly.MinValue).AddMonths(subscription.Duration));
+                                userSubscription.EndDate = DateOnly.FromDateTime(userSubscription.EndDate.ToDateTime(TimeOnly.MinValue).AddDays(subscription.Duration));
                                 _unitOfWork.UserSubRepository.Update(userSubscription);
                             }
                             else
@@ -182,7 +182,7 @@ namespace Opal_Exe201.Service.Services.SubscriptionServices
                                     UserId = user.UserId,
                                     SubscriptionId = subscription.SubscriptionId,
                                     StartDate = DateOnly.FromDateTime(DateTime.Now),
-                                    EndDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(subscription.Duration)),
+                                    EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(subscription.Duration)),
                                     Status = "ACTIVE",
                                     CreatedAt = DateTime.Now
                                 };
