@@ -140,6 +140,16 @@ namespace Opal_Exe201.Service.Services.UserServices
             };
             await _unitOfWork.UserCustomizeRepository.InsertAsync(userCustomization);
 
+
+            UserTheme userTheme = new UserTheme
+            {
+                UserThemeId = Guid.NewGuid().ToString(),
+                ThemeId = 1,
+                UserId = newUser.UserId,
+            };
+            await _unitOfWork.UserThemeRepository.InsertAsync(userTheme);
+
+
             _unitOfWork.Save();   
         }
 
