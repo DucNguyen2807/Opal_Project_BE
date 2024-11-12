@@ -1,3 +1,4 @@
+
 name: Toi chi muon deploy
 
 on:
@@ -16,5 +17,4 @@ jobs:
 
     - name: Run 'docker compose'
       run: docker compose -f compose.yaml up --build -d
-      working-directory: /home/myuser/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/
-
+      working-directory: /home/vitien/actions-runner/_work/Opal_Project_BE/Opal_Project_BE/Opal_Exe201/
