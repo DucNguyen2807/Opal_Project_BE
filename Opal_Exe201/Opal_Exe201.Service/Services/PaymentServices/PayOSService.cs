@@ -49,6 +49,26 @@ public class PayOSService : IPayOSService
                 payOSReqModel.RedirectUrl
             );
 
+            // Log payment data with correct property names
+            _logger.LogInformation("Du lieu thanh toan da duoc chuan bi cho OrderCode: {OrderCode}, Amount: {Amount}, Description: {Description}, CancelUrl: {CancelUrl}, ReturnUrl: {ReturnUrl}",
+                paymentData.orderCode, // Use the correct property name
+                paymentData.amount,
+                paymentData.description,
+                paymentData.cancelUrl, // Corrected from 'CancleUrl'
+                paymentData.returnUrl); // Corrected from 'RedirectUrl'
+
+            // Log item details
+            // Assuming 'ItemData' contains 'name', 'quantity', and 'price' as properties
+            foreach (var paymentItem in paymentData.items)
+            {
+                _logger.LogInformation("ItemData: Name: {Name}, Quantity: {Quantity}, Price: {Price}",
+                    paymentItem.name,      // Use the correct property name for description or name
+                    paymentItem.quantity,  // Assuming 'quantity' exists
+                    paymentItem.price);    // Assuming 'price' exists
+            }
+
+
+
             _logger.LogInformation("Du lieu thanh toan da duoc chuan bi cho OrderId: {OrderId}", payOSReqModel.OrderId);
 
             // Gọi PayOS để tạo link thanh toán
